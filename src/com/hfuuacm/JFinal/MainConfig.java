@@ -32,7 +32,7 @@ public class MainConfig extends JFinalConfig {
     public void configPlugin(Plugins plugins) {
         DruidPlugin druidPlugin =
                 new DruidPlugin("jdbc:mysql:chimuyuan.cn:3306/hfuuacm?useUnicode=true&characterEncoding=UTF-8",
-                "hfuuacm", "hfuujkxacm");
+                "Username", "password");
         plugins.add(druidPlugin);
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
         activeRecordPlugin.addMapping("article", Article.class);
