@@ -32,11 +32,12 @@ public class MainConfig extends JFinalConfig {
     @Override
     public void configPlugin(Plugins plugins) {
         DruidPlugin druidPlugin =
-                new DruidPlugin("jdbc:mysql://chimuyuan.cn:3306/hfuuacm?characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=GMT%2B8",
-                "hfuuacm", "hfuujkxacm");
+                new DruidPlugin("jdbc:mysql://chimuyuan.cn:3306/hfuuacm?useUnicode=true&characterEncoding=UTF-8",
+                        "Username", "password");
         WallFilter wall = new WallFilter();
         wall.setDbType("mysql");
         druidPlugin.addFilter(wall);
+
         plugins.add(druidPlugin);
 
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
