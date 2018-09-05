@@ -1,5 +1,6 @@
 package com.hfuuacm.JFinal;
 
+import com.alibaba.druid.wall.WallFilter;
 import com.hfuuacm.JFinal.Mysql.*;
 import com.jfinal.config.*;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
@@ -31,9 +32,13 @@ public class MainConfig extends JFinalConfig {
     @Override
     public void configPlugin(Plugins plugins) {
         DruidPlugin druidPlugin =
-                new DruidPlugin("jdbc:mysql:chimuyuan.cn:3306/hfuuacm?useUnicode=true&characterEncoding=UTF-8",
+                new DruidPlugin("jdbc:mysql://chimuyuan.cn:3306/hfuuacm?characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=GMT%2B8",
                 "hfuuacm", "hfuujkxacm");
+        WallFilter wall = new WallFilter();
+        wall.setDbType("mysql");
+        druidPlugin.addFilter(wall);
         plugins.add(druidPlugin);
+
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
         activeRecordPlugin.addMapping("article", Article.class);
         activeRecordPlugin.addMapping("loginlog", Loginlog.class);
@@ -41,6 +46,7 @@ public class MainConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("permission", Permission.class);
         activeRecordPlugin.addMapping("subject", Subject.class);
         activeRecordPlugin.addMapping("User", User.class);
+        plugins.add(activeRecordPlugin);
     }
 
     @Override
