@@ -5,7 +5,6 @@ import com.hfuuacm.JFinal.Mysql.*;
 import com.jfinal.config.*;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
-import com.jfinal.render.ViewType;
 import com.jfinal.template.Engine;
 
 
@@ -14,14 +13,14 @@ public class MainConfig extends JFinalConfig {
     @Override
     public void configConstant(Constants constants) {
         constants.setDevMode(true);
-        constants.setViewType(ViewType.JSP);
+//        constants.setViewType(ViewType.JSP);
 
     }
 
     @Override
     public void configRoute(Routes routes) {
         routes.add("/", jspindex.class);
-        routes.add("/user", userController.class);
+        routes.add("/user", LoginController.class);
     }
 
     @Override
@@ -33,7 +32,7 @@ public class MainConfig extends JFinalConfig {
     public void configPlugin(Plugins plugins) {
         DruidPlugin druidPlugin =
                 new DruidPlugin("jdbc:mysql://chimuyuan.cn:3306/hfuuacm?useUnicode=true&characterEncoding=UTF-8",
-                        "Username", "password");
+                        "Username", "PASSWORD");
         WallFilter wall = new WallFilter();
         wall.setDbType("mysql");
         druidPlugin.addFilter(wall);
@@ -43,7 +42,6 @@ public class MainConfig extends JFinalConfig {
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
         activeRecordPlugin.addMapping("article", Article.class);
         activeRecordPlugin.addMapping("loginlog", Loginlog.class);
-        activeRecordPlugin.addMapping("oplog", Oplog.class);
         activeRecordPlugin.addMapping("permission", Permission.class);
         activeRecordPlugin.addMapping("subject", Subject.class);
         activeRecordPlugin.addMapping("User", User.class);

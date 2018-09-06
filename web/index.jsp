@@ -16,5 +16,6 @@
     密码:<input type="password" name="upwd">
     <input type="submit" name="提交" id="">
   </form>
+  ${user.name}
   </body>
 </html>
