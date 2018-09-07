@@ -1,11 +1,18 @@
 package com.hfuuacm.JFinal;
 
 import com.alibaba.druid.wall.WallFilter;
+import com.hfuuacm.JFinal.User.UserController;
 import com.hfuuacm.JFinal.Mysql.*;
+import com.hfuuacm.JFinal.Test.testindex;
 import com.jfinal.config.*;
+import com.jfinal.kit.PathKit;
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
+
+import java.io.File;
 
 
 public class MainConfig extends JFinalConfig {
@@ -19,8 +26,8 @@ public class MainConfig extends JFinalConfig {
 
     @Override
     public void configRoute(Routes routes) {
-        routes.add("/", jspindex.class);
-        routes.add("/user", LoginController.class);
+        routes.add("/", testindex.class);
+        routes.add("/user", UserController.class);
     }
 
     @Override
@@ -30,9 +37,11 @@ public class MainConfig extends JFinalConfig {
 
     @Override
     public void configPlugin(Plugins plugins) {
+        String path = PathKit.getRootClassPath() + "\\hfuuacm.properties";
+        Prop prop = PropKit.use(new File(path), "UTF-8");
         DruidPlugin druidPlugin =
                 new DruidPlugin("jdbc:mysql://chimuyuan.cn:3306/hfuuacm?useUnicode=true&characterEncoding=UTF-8",
-                        "Username", "PASSWORD");
+                        prop.get("MysqlUser"), prop.get("MysqlPassword"));
         WallFilter wall = new WallFilter();
         wall.setDbType("mysql");
         druidPlugin.addFilter(wall);
