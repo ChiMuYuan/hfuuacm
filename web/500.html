@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap Admin</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" type="text/css" href="css/theme.css">
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
+
+    <script src="lib/jquery-1.8.1.min.js" type="text/javascript"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="css/carousel.css" rel="stylesheet">
+
+    <!-- Demo page code -->
+    
+    <style type="text/css">
+        #line-chart {
+            height:300px;
+            width:800px;
+            margin: 0px auto;
+            margin-top: 1em;
+        }
+        .brand { font-family: georgia, serif; }
+        .brand .first {
+            color: #ccc;
+            font-style: italic;
+        }
+        .brand .second {
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="../assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
+  <!--[if IE 7 ]> <body class="ie ie7"> <![endif]-->
+  <!--[if IE 8 ]> <body class="ie ie8"> <![endif]-->
+  <!--[if IE 9 ]> <body class="ie ie9"> <![endif]-->
+  <!--[if (gt IE 9)|!(IE)]><!--> 
+  <body> 
+  <!--<![endif]-->
+  <div class="navbar-wrapper">
+        <div class="container">
+      
+          <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">ACM实验室</a>
+              </div>
+              <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="#">首页</a></li>
+                  <li><a href="#about">组内通知</a></li>
+                  <li><a href="#contact">成绩公告</a></li>
+                  <li><a href="#">本周工作</a></li>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">竞赛历程 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">rating榜</a></li>
+                      <li><a href="User_all.jsp">成员榜</a></li>
+                      <li><a href="#">历年成绩</a></li>
+                      <li role="separator" class="divider"></li>
+                      <li class="dropdown-header">相关网站</li>
+                      <li><a href="https://hfuuosc.org/">hfuu开源社区</a></li>
+                      <li><a href="https://oj.chimuyuan.cn/">hfuu练习测试平台</a></li>
+                      <li><a href="https://pearfl.github.io/">队内博客链接</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#">更多栏目</a></li>
+                </ul>
+                <div style="display: flex;justify-content: flex-end;">
+                  <ul class="nav navbar-nav">
+                    <!--<li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=session.getAttribute("uname")%><span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">账户管理</a></li>
+                        <li><a href="#">历史成绩</a></li>
+                        <li><a href="logout.jsp">注销</a></li>
+                      </ul>
+                    </li>-->
+                    <li data-toggle="modal" data-target="#loginModal" cursor:pointer;><a>登录</a></li>
+                    <li data-toggle="modal" data-target="#registerModal" cursor:pointer;><a>注册</a></li>
+                    
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </nav>
+      
+        </div>
+      </div> 
+
+    <div class="container-fluid">
+        
+        <div class="row-fluid">
+            <br>
+    <div class="http-error">
+        <h1>500!</h1>
+        <p class="info">Something happened that we didn't expect.</p>
+        <p><i class="icon-home"></i></p>
+        <p><a href="index.html">Back to the home page</a></p>
+    </div>
+</div>
+</div>
+</body>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</html>
+
+
