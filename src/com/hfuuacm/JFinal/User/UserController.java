@@ -1,19 +1,32 @@
 package com.hfuuacm.JFinal.User;
 
 import com.hfuuacm.JFinal.Mysql.User;
+import com.hfuuacm.JFinal.Main.sessionInterceptors;
 import com.hfuuacm.Tools.Encryption;
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
 import java.util.List;
 
 public class UserController extends Controller {
     public void index() {
-        render("");
+        render("/");
     }
 
+    @Before(sessionInterceptors.class)
     public void Login() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String uid = getSessionAttr("uid");
+        String Username = getSessionAttr("Username");
+        String permission = getSessionAttr("permission");
+        if (uid != null && Username != null && permission != null) {
+            setAttr("status", "success");
+            setAttr("uname", getSessionAttr("Username"));
+            renderJson(new String[]{"status", "uname"});
+            return;
+        }
+
         String uname = getPara("uname");
         String upwd = getPara("upwd");
         List<User> userlist = null;
@@ -23,7 +36,7 @@ public class UserController extends Controller {
         else
             userlist = User.dao.find("SELECT * FROM User WHERE Username=?'", uname);
         if (userlist == null) {
-            renderText("账号或邮箱错误");
+            renderJson("status", "密码或邮箱错误");
             return;
         }
         else
@@ -33,13 +46,11 @@ public class UserController extends Controller {
             String auth_tocken = Encryption.MD5BASE64(uname + Encryption.RandomString());
             setCookie("auth_token", auth_tocken, 1000*60*60*24*7);
             user.dao().set("cookies_token", auth_tocken).update();
-            renderText("登录成功");
+            setAttr("status", "success");
+            setAttr("uname", user.getStr("Username"));
+            renderJson(new String[]{"status", "uname"});
         }
         else
-            renderText("登录失败" + userlist.get(0).getStr("password"));
-    }
-
-    public void test() {
-        renderText("test");
+            renderJson("status", "密码错误");
     }
 }
