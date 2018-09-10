@@ -21,6 +21,10 @@ public class MainConfig extends JFinalConfig {
     public void configConstant(Constants constants) {
         constants.setDevMode(true);
 //        constants.setViewType(ViewType.JSP);
+
+        constants.setError403View("/error/403.html");
+        constants.setError404View("/error/404.html");
+        constants.setError500View("/error/500.html");
     }
 
     @Override
