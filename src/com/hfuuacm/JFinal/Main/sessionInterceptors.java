@@ -12,8 +12,10 @@ public class sessionInterceptors implements Interceptor {
                 || controller.getSessionAttr("permission") == null) {
             String uid = controller.getCookie("uid");
             String auth_token = controller.getCookie("auth_token");
+
             if (uid != null && auth_token != null) {
                 User user = User.dao.findById(uid);
+
                 if (user.getStr("cookies_token").equals(auth_token)) {
                     controller.setSessionAttr("uid", user.getStr("id"));
                     controller.setSessionAttr("Username", user.getStr("Username"));
