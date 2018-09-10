@@ -16,14 +16,13 @@ public class sessionInterceptors implements Interceptor {
             if (uid != null && auth_token != null) {
                 User user = User.dao.findById(uid);
 
-                if (user.getStr("cookies_token").equals(auth_token)) {
+                if (user.getStr("auth_token").equals(auth_token)) {
                     controller.setSessionAttr("uid", user.getStr("id"));
                     controller.setSessionAttr("Username", user.getStr("Username"));
                     controller.setSessionAttr("permission", user.getStr("permission"));
                 }
             }
         }
-        else
-            controller.redirect("/");
+        invocation.invoke();
     }
 }

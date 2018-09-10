@@ -1,6 +1,5 @@
 package com.hfuuacm.JFinal.User;
 
-import com.hfuuacm.JFinal.Mysql.User;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
@@ -8,6 +7,61 @@ import com.jfinal.core.Controller;
 public class UserInterceptors implements Interceptor {
     public void intercept(Invocation invocation) {
         Controller controller = invocation.getController();
-        controller.render("/");
+        String key = invocation.getActionKey();
+        if (key.equals("/user/login") && LoginInterceptors(controller)) {
+            controller.redirect("/");
+            return;
+        }
+        else if (key.equals("/user/register") && RegisterInterceptors(controller)) {
+            controller.redirect("/");
+            return;
+        }
+        else if (key.equals("/user/update") && UpdateInterceptors(controller)) {
+            controller.redirect("/");
+            return;
+        }
+        else if(key.equals("/user/logout") && LogoutInterceptors(controller)) {
+            controller.redirect("/");
+            return;
+        }
+        invocation.invoke();
+    }
+
+    private boolean LoginInterceptors(Controller controller) {
+        String password = controller.getPara("password");
+        String Username = controller.getPara("uname");
+
+        if (password == null || Username == null)
+            return true;
+        return false;
+    }
+
+    private boolean RegisterInterceptors(Controller controller) {
+        String Username = controller.getPara("uname2");
+        String email = controller.getPara("uemail2");
+        String password = controller.getPara("upwd2");
+
+        if (Username == null || email == null || password == null)
+            return true;
+        return false;
+    }
+
+    private boolean UpdateInterceptors(Controller controller) {
+        String uid = controller.getSessionAttr("uid");
+        String Username = controller.getPara("uname");
+        String password = controller.getPara("upwd");
+        String email = controller.getPara("uemail");
+
+        if (uid == null || Username == null || password == null || email == null)
+            return true;
+        return false;
+    }
+
+    private boolean LogoutInterceptors(Controller controller) {
+        String uid = controller.getSessionAttr("uid");
+
+        if (uid == null)
+            return true;
+        return false;
     }
 }
