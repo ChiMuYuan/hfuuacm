@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserController extends Controller {
     public void index() {
-        render("/");
+        redirect("/");
     }
 
     @Before(sessionInterceptors.class)
@@ -31,6 +31,12 @@ public class UserController extends Controller {
         String upwd = getPara("upwd");
         List<User> userlist = null;
         User user = null;
+
+        if (uname == null || upwd == null) {
+            redirect("/");
+            return;
+        }
+
         if (uname.indexOf("@") != -1)
             userlist = User.dao.find("SELECT * FROM User WHERE email=?", uname);
         else
@@ -64,7 +70,7 @@ public class UserController extends Controller {
         String password = getPara("upwd2");
         String email = getPara("uemail2");
         if (Username == null || password == null || email == null) {
-            render("/");
+            redirect("/");
             return;
         }
 
@@ -73,7 +79,7 @@ public class UserController extends Controller {
         else if (User.dao.find("SELSECT * FROM User WHERE email=?", email) != null)
             renderJson("status", "邮箱已存在");
         else {
-            new User().set("Username", Username).set("email", email)
+            new User().set("Username", Username).set("email", email).set("permission", "3")
                     .set("password", Encryption.MD5BASE64(password)).save();
 
             User user = User.dao.find("SELECT * FROM User WHERE Username=?", Username).get(0);
@@ -91,6 +97,9 @@ public class UserController extends Controller {
             setAttr("uname", user.getStr("Username"));
             renderJson(new String[]{"status", "uname"});
         }
+    }
 
+    public void test() {
+        renderText("123");
     }
 }
