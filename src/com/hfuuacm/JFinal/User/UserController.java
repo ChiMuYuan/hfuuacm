@@ -79,7 +79,7 @@ public class UserController extends Controller {
         else if (User.dao.find("SELSECT * FROM User WHERE email=?", email) != null)
             renderJson("status", "邮箱已存在");
         else {
-            new User().set("Username", Username).set("email", email)
+            new User().set("Username", Username).set("email", email).set("permission", "3")
                     .set("password", Encryption.MD5BASE64(password)).save();
 
             User user = User.dao.find("SELECT * FROM User WHERE Username=?", Username).get(0);
