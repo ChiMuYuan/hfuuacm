@@ -24,6 +24,6 @@ public class sessionInterceptors implements Interceptor {
             }
         }
         else
-            controller.render("/");
+            controller.redirect("/");
     }
 }

@@ -12,10 +12,10 @@ import java.util.List;
 
 public class UserController extends Controller {
     public void index() {
-        render("/");
+        redirect("/");
     }
 
-    @Before(sessionInterceptors.class)
+//    @Before(sessionInterceptors.class)
     public void Login() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String uid = getSessionAttr("uid");
         String Username = getSessionAttr("Username");
@@ -31,6 +31,12 @@ public class UserController extends Controller {
         String upwd = getPara("upwd");
         List<User> userlist = null;
         User user = null;
+
+        if (uname == null || upwd == null) {
+            redirect("/");
+            return;
+        }
+
         if (uname.indexOf("@") != -1)
             userlist = User.dao.find("SELECT * FROM User WHERE email=?", uname);
         else
@@ -64,7 +70,7 @@ public class UserController extends Controller {
         String password = getPara("upwd2");
         String email = getPara("uemail2");
         if (Username == null || password == null || email == null) {
-            render("/");
+            redirect("/");
             return;
         }
 
@@ -91,6 +97,9 @@ public class UserController extends Controller {
             setAttr("uname", user.getStr("Username"));
             renderJson(new String[]{"status", "uname"});
         }
+    }
 
+    public void test() {
+        renderText("123");
     }
 }
