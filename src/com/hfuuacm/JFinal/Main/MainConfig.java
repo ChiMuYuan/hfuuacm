@@ -20,7 +20,6 @@ public class MainConfig extends JFinalConfig {
     @Override
     public void configConstant(Constants constants) {
         constants.setDevMode(true);
-//        constants.setViewType(ViewType.JSP);
 
         constants.setError403View("/error/403.html");
         constants.setError404View("/error/404.html");
@@ -29,8 +28,10 @@ public class MainConfig extends JFinalConfig {
 
     @Override
     public void configRoute(Routes routes) {
-        routes.add("/", testindex.class);
+        routes.add("/", htmlindex.class);
         routes.add("/user", UserController.class);
+//        routes.add("/subject", SubjectCon)
+
         routes.add("test", testindex.class);
     }
 

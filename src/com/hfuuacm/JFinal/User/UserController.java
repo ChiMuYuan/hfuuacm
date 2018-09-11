@@ -5,18 +5,17 @@ import com.hfuuacm.JFinal.Main.sessionInterceptors;
 import com.hfuuacm.Tools.Encryption;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
-
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
+
+@Before({sessionInterceptors.class, UserInterceptors.class})
 public class UserController extends Controller {
     public void index() {
         redirect("/");
     }
 
-//    @Before(sessionInterceptors.class)
-    public void Login() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void login() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String uid = getSessionAttr("uid");
         String Username = getSessionAttr("Username");
         String permission = getSessionAttr("permission");
@@ -29,29 +28,22 @@ public class UserController extends Controller {
 
         String uname = getPara("uname");
         String upwd = getPara("upwd");
-        List<User> userlist = null;
         User user = null;
 
-        if (uname == null || upwd == null) {
-            redirect("/");
-            return;
-        }
-
         if (uname.indexOf("@") != -1)
-            userlist = User.dao.find("SELECT * FROM User WHERE email=?", uname);
+            user = User.dao.findFirst("SELECT * FROM User WHERE email=?", uname);
         else
-            userlist = User.dao.find("SELECT * FROM User WHERE Username=?'", uname);
-        if (userlist == null) {
+            user = User.dao.findFirst("SELECT * FROM User WHERE Username=?'", uname);
+        if (user == null) {
             renderJson("status", "密码或邮箱错误");
             return;
         }
-        else
-            user = userlist.get(0);
-        if (upwd.equals(user.getStr("password"))) {
+
+        if (Encryption.MD5BASE64(upwd).equals(user.getStr("password"))) {
             setCookie("uid", user.getStr("id"), 1000*60*60*24*7);
             String auth_tocken = Encryption.MD5BASE64(uname + Encryption.RandomString());
             setCookie("auth_token", auth_tocken, 1000*60*60*24*7);
-            user.dao().set("cookies_token", auth_tocken).update();
+            user.set("auth_token", auth_tocken).update();
 
             setSessionAttr("uid", user.getStr("id"));
             setSessionAttr("Username", uname);
@@ -65,14 +57,10 @@ public class UserController extends Controller {
             renderJson("status", "密码错误");
     }
 
-    public void Register() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void register() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String Username = getPara("uanme2");
         String password = getPara("upwd2");
         String email = getPara("uemail2");
-        if (Username == null || password == null || email == null) {
-            redirect("/");
-            return;
-        }
 
         if (User.dao.find("SELSECT * FROM User WHERE Username=?", Username) != null)
             renderJson("status", "用户名已存在");
@@ -92,14 +80,39 @@ public class UserController extends Controller {
             setSessionAttr("Username", Username);
             setSessionAttr("permission", user.getStr("permission"));
 
-            user.dao().set("cookies_token", auth_tocken).update();
+            user.set("auth_token", auth_tocken).update();
             setAttr("status", "success");
             setAttr("uname", user.getStr("Username"));
             renderJson(new String[]{"status", "uname"});
         }
     }
 
-    public void test() {
-        renderText("123");
+    public void update() {
+        String uid = getSessionAttr("uid");
+        String Username = getPara("uname");
+        String email = getPara("ueamil");
+        String password = getPara("upwd");
+
+        if(User.dao.findFirst("SELECT * FROM User WHERE Username=? OR email=?", Username, email) == null) {
+            User user = User.dao.findById(getSessionAttr("uid"));
+            user.set("Username", Username).set("email", email).set("password", password).update();
+            setAttr("status", "success");
+            setAttr("uname", Username);
+            renderJson(new String[]{"status", "uname"});
+        }
+        else
+            renderJson("status", "用户名或邮箱已存在");
     }
+
+    public void logout() {
+        String uid = getSessionAttr("uid");
+
+        User user = User.dao.findById("uid");
+        user.set("auth_token", "").update();
+        setSessionAttr("uid", "");
+        setSessionAttr("Username", "");
+        setSessionAttr("perimission", "");
+        redirect("/");
+    }
+
 }
