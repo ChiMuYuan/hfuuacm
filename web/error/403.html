@@ -26,6 +26,8 @@
     <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
     <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
     <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="../css/carousel.css" rel="stylesheet">
 
@@ -49,6 +51,10 @@
         }
     </style>
 
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     
   </head>
@@ -77,8 +83,8 @@
               <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                   <li><a href="#">首页</a></li>
-                  <li><a href="#">组内通知</a></li>
-                  <li><a href="#">成绩公告</a></li>
+                  <li><a href="#about">组内通知</a></li>
+                  <li><a href="#contact">成绩公告</a></li>
                   <li><a href="#">本周工作</a></li>
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">竞赛历程 <span class="caret"></span></a>
@@ -105,8 +111,8 @@
                         <li><a href="logout.jsp">注销</a></li>
                       </ul>
                     </li>-->
-                    <li data-toggle="modal" data-target="#loginModal"><a>登录</a></li>
-                    <li data-toggle="modal" data-target="#registerModal"><a>注册</a></li>
+                    <li data-toggle="modal" data-target="#loginModal" cursor:pointer;><a>登录</a></li>
+                    <li data-toggle="modal" data-target="#registerModal" cursor:pointer;><a>注册</a></li>
                     
                   </ul>
                 </div>
@@ -128,12 +134,12 @@
         <p><a href="index.html">Back to the home page</a></p>
     </div>
 </div>
-    </div>
   </body>
   <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </html>
 

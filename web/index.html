@@ -69,8 +69,8 @@
                   <li><a href="logout.jsp">注销</a></li>
                 </ul>
               </li>-->
-              <li data-toggle="modal" data-target="#loginModal"><a>登录</a></li>
-              <li data-toggle="modal" data-target="#registerModal"><a>注册</a></li>
+              <li data-toggle="modal" data-target="#loginModal" cursor:pointer;><a>登录</a></li>
+              <li data-toggle="modal" data-target="#registerModal" cursor:pointer;><a>注册</a></li>
               
             </ul>
           </div>
@@ -257,7 +257,7 @@
           </div>
           <div class="modal-footer">
               <span id="registerMsg" class="tip_login" style="opacity: 1;color:red;"></span>
-              <button type="submit" class="btn btn-primary">注册</button>
+              <button type="submit" class="btn btn-primary" id="btn-register">注册</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
           </div>
         </form>
@@ -271,7 +271,27 @@
 </body>
 <script type="text/javascript">
     $(document).ready(function(e){
-        $.ajax({
+      $.ajax({
+            url:"http://localhost:8080/user/Login",
+            type:"post",
+            dataType:"json",
+            success:function(result){
+                //var flag = result.flag;
+                //alert(result);
+                if(result.status == success){
+                    //如果登录成功则跳转到成功页面
+                    //window.location.href="index.jsp";
+                    alert(result.uname);
+                }else{
+                    //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
+                    alert(result.uname);
+                    $(".tip_login").text("密码不正确");
+                    //alert("您输入的用户名或者密码不正确");
+                }
+            }
+        });
+
+        /*$.ajax({
               url:"",
               data:{page:10,column:"group-information"},
               type:"post",
@@ -311,13 +331,14 @@
                 }
                 $("#this-week-work").html(s);
             }
-        });
-    })
+        });*/
+    });
     
     $("#btn-login").click(function(){
-        //
+        alert($("input[name=uname]").val());
+        alert($("input[name=upwd]").val());
         $.ajax({
-            url:"http://localhost:8080/loggin",
+            url:"http://localhost:8080/user/Login",
             type:"post",
             data:{
                 uname:$("input[name=uname]").val(),
@@ -336,7 +357,41 @@
                     //alert("您输入的用户名或者密码不正确");
                 }
             }
+        });
+    });
 
+    $("#btn-register").click(function(){
+       //打印
+        /*alert($("input[name=uname2]").val());
+        alert($("input[name=uemail2]").val());*/
+
+        $.ajax({
+            url:"http://localhost:8080/user/Register",
+            type:"post",
+            data:{
+                uname2:$("input[name=uname2]").val(),
+                uemail2:$("input[name=uemail2]").val(),
+                upwd2:$("input[name=upwd2]").val()
+            },
+            dataType:"json",
+            success:function(data){
+                //var flag = result.flag;
+                alert(1);
+                var result = $.parsejson(data);
+                alert(1);
+                alert(result);
+                alert(result.status);
+                alert(result.uname);
+                if(result.status == success){
+                    alert("注册成功");
+                    window.location.href="index.jsp";
+                }else{
+                    //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
+                    //$(".tip_login").text("密码不正确");
+                    //alert("您输入的用户名或者密码不正确");
+                    alert("注册失败");
+                }
+            }
         });
     });
 </script>
