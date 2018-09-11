@@ -69,8 +69,8 @@
                   <li><a href="logout.jsp">注销</a></li>
                 </ul>
               </li>-->
-              <li data-toggle="modal" data-target="#loginModal" cursor:pointer;><a>登录</a></li>
-              <li data-toggle="modal" data-target="#registerModal" cursor:pointer;><a>注册</a></li>
+                <li data-toggle="modal" data-target="#loginModal"><a style="cursor: hand">登录</a></li>
+              <li data-toggle="modal" data-target="#registerModal"><a style="cursor: pointer">注册</a></li>
               
             </ul>
           </div>
@@ -272,13 +272,11 @@
 <script type="text/javascript">
     $(document).ready(function(e){
       $.ajax({
-            url:"http://localhost:8080/user/Login",
+            url:"http://localhost:8080/user/login",
             type:"post",
             dataType:"json",
             success:function(result){
-                //var flag = result.flag;
-                //alert(result);
-                if(result.status == success){
+                if(result.status == "success"){
                     //如果登录成功则跳转到成功页面
                     //window.location.href="index.jsp";
                     alert(result.uname);
@@ -338,7 +336,7 @@
         alert($("input[name=uname]").val());
         alert($("input[name=upwd]").val());
         $.ajax({
-            url:"http://localhost:8080/user/Login",
+            url:"http://localhost:8080/user/login",
             type:"post",
             data:{
                 uname:$("input[name=uname]").val(),
@@ -348,11 +346,14 @@
             success:function(result){
                 //var flag = result.flag;
                 //alert(result);
-                if(result == true){
+                alert(1)
+                if(result == success){
                     //如果登录成功则跳转到成功页面
-                    window.location.href="index.jsp";
+                    alert("登录成功")
+                    window.location.href="index.html";
                 }else{
                     //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
+                    alert("错误")
                     $(".tip_login").text("密码不正确");
                     //alert("您输入的用户名或者密码不正确");
                 }
@@ -364,9 +365,8 @@
        //打印
         /*alert($("input[name=uname2]").val());
         alert($("input[name=uemail2]").val());*/
-
         $.ajax({
-            url:"http://localhost:8080/user/Register",
+            url:"http://localhost:8080/user/register",
             type:"post",
             data:{
                 uname2:$("input[name=uname2]").val(),
@@ -374,23 +374,23 @@
                 upwd2:$("input[name=upwd2]").val()
             },
             dataType:"json",
-            success:function(data){
-                //var flag = result.flag;
-                alert(1);
-                var result = $.parsejson(data);
-                alert(1);
-                alert(result);
+            success:function(result){
                 alert(result.status);
-                alert(result.uname);
-                if(result.status == success){
-                    alert("注册成功");
-                    window.location.href="index.jsp";
+                if(result.status == "success"){
+                    alert("注册成功，用户名为"+result.uname);
                 }else{
-                    //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
-                    //$(".tip_login").text("密码不正确");
-                    //alert("您输入的用户名或者密码不正确");
-                    alert("注册失败");
+                    alert("注册失败,用户名或邮箱已存在");
                 }
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                /*弹出jqXHR对象的信息*/
+                alert(jqXHR.responseText);
+                alert(jqXHR.status);
+                alert(jqXHR.readyState);
+                alert(jqXHR.statusText);
+                /*弹出其他两个参数的信息*/
+                alert(textStatus);
+                alert(errorThrown);
             }
         });
     });
