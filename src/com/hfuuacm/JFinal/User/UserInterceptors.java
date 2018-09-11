@@ -8,22 +8,21 @@ public class UserInterceptors implements Interceptor {
     public void intercept(Invocation invocation) {
         Controller controller = invocation.getController();
         String key = invocation.getActionKey();
+
         if (key.equals("/user/login") && LoginInterceptors(controller)) {
             controller.renderJson("status", false);
             return;
-        }
-        else if (key.equals("/user/register") && RegisterInterceptors(controller)) {
+        } else if (key.equals("/user/register") && RegisterInterceptors(controller)) {
+            controller.redirect("/");
+            return;
+        } else if (key.equals("/user/update") && UpdateInterceptors(controller)) {
+            controller.redirect("/");
+            return;
+        } else if(key.equals("/user/logout") && LogoutInterceptors(controller)) {
             controller.redirect("/");
             return;
         }
-        else if (key.equals("/user/update") && UpdateInterceptors(controller)) {
-            controller.redirect("/");
-            return;
-        }
-        else if(key.equals("/user/logout") && LogoutInterceptors(controller)) {
-            controller.redirect("/");
-            return;
-        }
+
         invocation.invoke();
     }
 
