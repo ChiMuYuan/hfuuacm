@@ -58,13 +58,13 @@ public class UserController extends Controller {
     }
 
     public void register() throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String Username = getPara("uanme2");
+        String Username = getPara("uname2");
         String password = getPara("upwd2");
         String email = getPara("uemail2");
 
-        if (User.dao.find("SELSECT * FROM User WHERE Username=?", Username) != null)
+        if (User.dao.findFirst("SELECT * FROM User WHERE Username=?", Username) != null)
             renderJson("status", "用户名已存在");
-        else if (User.dao.find("SELSECT * FROM User WHERE email=?", email) != null)
+        else if (User.dao.findFirst("SELECT * FROM User WHERE email=?", email) != null)
             renderJson("status", "邮箱已存在");
         else {
             new User().set("Username", Username).set("email", email).set("permission", "3")

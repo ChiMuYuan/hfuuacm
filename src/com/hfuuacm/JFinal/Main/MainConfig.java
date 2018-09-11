@@ -45,8 +45,7 @@ public class MainConfig extends JFinalConfig {
         String path = PathKit.getRootClassPath() + "\\hfuuacm.properties";
         Prop prop = PropKit.use(new File(path), "UTF-8");
         DruidPlugin druidPlugin =
-                new DruidPlugin("jdbc:mysql://chimuyuan.cn:3306/hfuuacm?useUnicode=true&characterEncoding=UTF-8",
-                        prop.get("MysqlUser"), prop.get("MysqlPassword"));
+                new DruidPlugin(prop.get("MysqlUrl"), prop.get("MysqlUser"), prop.get("MysqlPassword"));
         WallFilter wall = new WallFilter();
         wall.setDbType("mysql");
         druidPlugin.addFilter(wall);

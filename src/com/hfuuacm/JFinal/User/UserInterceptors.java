@@ -9,7 +9,7 @@ public class UserInterceptors implements Interceptor {
         Controller controller = invocation.getController();
         String key = invocation.getActionKey();
         if (key.equals("/user/login") && LoginInterceptors(controller)) {
-            controller.redirect("/");
+            controller.renderJson("status", false);
             return;
         }
         else if (key.equals("/user/register") && RegisterInterceptors(controller)) {
