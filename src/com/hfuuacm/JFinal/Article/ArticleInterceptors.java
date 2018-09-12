@@ -18,9 +18,9 @@ public class ArticleInterceptors implements Interceptor {
     }
 
     private boolean GetlinkInterceptor(Controller controller) {
-        String column = controller.getPara("column");
+        String number = controller.getPara("lists");
 
-        if (column == null)
+        if (number == null)
             return true;
         return false;
     }

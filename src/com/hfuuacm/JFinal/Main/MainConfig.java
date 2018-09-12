@@ -11,7 +11,6 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
-
 import java.io.File;
 
 
@@ -54,7 +53,6 @@ public class MainConfig extends JFinalConfig {
 
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
         activeRecordPlugin.addMapping("article", Article.class);
-        activeRecordPlugin.addMapping("loginlog", Loginlog.class);
         activeRecordPlugin.addMapping("permission", Permission.class);
         activeRecordPlugin.addMapping("subject", Subject.class);
         activeRecordPlugin.addMapping("User", User.class);
