@@ -60,7 +60,7 @@
             <li><a href="#">更多栏目</a></li>
           </ul>
           <div style="display: flex;justify-content: flex-end;">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav" id="login_register">
               <!--<li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=session.getAttribute("uname")%><span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -277,21 +277,19 @@
             dataType:"json",
             success:function(result){
                 if(result.status == "success"){
-                    //如果登录成功则跳转到成功页面
-                    //window.location.href="index.jsp";
-                    alert(result.uname);
+                    var s = "<li data-toggle=\"modal\" data-target=\"#loginModal\"><a style=\"cursor: hand\">"+result.uname+"</a></li>\n"
+                    $("#login_register").html(s);
                 }else{
-                    //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
-                    alert(result.uname);
-                    $(".tip_login").text("密码不正确");
-                    //alert("您输入的用户名或者密码不正确");
+                    var s = "<li data-toggle=\"modal\" data-target=\"#loginModal\"><a style=\"cursor: hand\">登录</a></li>\n" +
+                        "              <li data-toggle=\"modal\" data-target=\"#registerModal\"><a style=\"cursor: pointer\">注册</a></li>"
+                    $("#login_register").html(s);
                 }
             }
         });
 
-        /*$.ajax({
+        $.ajax({
               url:"",
-              data:{page:10,column:"group-information"},
+              data:{column:"group-information"},
               type:"post",
               dataType:"json",
               success: function(data){
@@ -305,7 +303,7 @@
 
         $.ajax({
             url:"",
-            data:{page:10,column:"achievement"},
+            data:{column:"achievement"},
             type:"post",
             dataType:"json",
             success: function(data){
@@ -319,7 +317,7 @@
 
         $.ajax({
             url:"",
-            data:{page:10,column:"this-week-work"},
+            data:{column:"this-week-work"},
             type:"post",
             dataType:"json",
             success: function(data){
@@ -329,12 +327,10 @@
                 }
                 $("#this-week-work").html(s);
             }
-        });*/
+        });
     });
     
     $("#btn-login").click(function(){
-        alert($("input[name=uname]").val());
-        alert($("input[name=upwd]").val());
         $.ajax({
             url:"http://localhost:8080/user/login",
             type:"post",
@@ -344,27 +340,20 @@
             },
             dataType:"json",
             success:function(result){
-                //var flag = result.flag;
-                //alert(result);
-                alert(1)
-                if(result == success){
+                if(result.status == "success"){
                     //如果登录成功则跳转到成功页面
-                    alert("登录成功")
+                    alert("登录成功");
                     window.location.href="index.html";
                 }else{
                     //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
-                    alert("错误")
-                    $(".tip_login").text("密码不正确");
-                    //alert("您输入的用户名或者密码不正确");
+                    //$(".tip_login").text("密码不正确");
+                    alert("您输入的用户名或者密码不正确");
                 }
             }
         });
     });
 
     $("#btn-register").click(function(){
-       //打印
-        /*alert($("input[name=uname2]").val());
-        alert($("input[name=uemail2]").val());*/
         $.ajax({
             url:"http://localhost:8080/user/register",
             type:"post",
