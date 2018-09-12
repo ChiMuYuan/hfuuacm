@@ -11,7 +11,6 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
-
 import java.io.File;
 
 
@@ -45,8 +44,7 @@ public class MainConfig extends JFinalConfig {
         String path = PathKit.getRootClassPath() + "\\hfuuacm.properties";
         Prop prop = PropKit.use(new File(path), "UTF-8");
         DruidPlugin druidPlugin =
-                new DruidPlugin("jdbc:mysql://chimuyuan.cn:3306/hfuuacm?useUnicode=true&characterEncoding=UTF-8",
-                        prop.get("MysqlUser"), prop.get("MysqlPassword"));
+                new DruidPlugin(prop.get("MysqlUrl"), prop.get("MysqlUser"), prop.get("MysqlPassword"));
         WallFilter wall = new WallFilter();
         wall.setDbType("mysql");
         druidPlugin.addFilter(wall);
@@ -55,7 +53,6 @@ public class MainConfig extends JFinalConfig {
 
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
         activeRecordPlugin.addMapping("article", Article.class);
-        activeRecordPlugin.addMapping("loginlog", Loginlog.class);
         activeRecordPlugin.addMapping("permission", Permission.class);
         activeRecordPlugin.addMapping("subject", Subject.class);
         activeRecordPlugin.addMapping("User", User.class);
