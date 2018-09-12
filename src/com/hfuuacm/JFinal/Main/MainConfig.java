@@ -1,6 +1,7 @@
 package com.hfuuacm.JFinal.Main;
 
 import com.alibaba.druid.wall.WallFilter;
+import com.hfuuacm.JFinal.Article.ArticleController;
 import com.hfuuacm.JFinal.User.UserController;
 import com.hfuuacm.JFinal.Mysql.*;
 import com.hfuuacm.JFinal.Test.testindex;
@@ -29,9 +30,10 @@ public class MainConfig extends JFinalConfig {
     public void configRoute(Routes routes) {
         routes.add("/", htmlindex.class);
         routes.add("/user", UserController.class);
+        routes.add("/article", ArticleController.class);
 //        routes.add("/subject", SubjectCon)
 
-        routes.add("test", testindex.class);
+//        routes.add("/test", testindex.class);
     }
 
     @Override
