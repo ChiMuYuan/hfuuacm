@@ -68,16 +68,8 @@
           </ul>
           <div style="display: flex;justify-content: flex-end;">
             <ul class="nav navbar-nav" id="login_register">
-              <!--<li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=session.getAttribute("uname")%><span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">账户管理</a></li>
-                  <li><a href="#">历史成绩</a></li>
-                  <li><a href="logout.jsp">注销</a></li>
-                </ul>
-              </li>-->
-                <li data-toggle="modal" data-target="#loginModal"><a style="cursor: hand">登录</a></li>
-              <li data-toggle="modal" data-target="#registerModal"><a style="cursor: pointer">注册</a></li>
+                <!--<li data-toggle="modal" data-target="#loginModal"><a style="cursor: hand">登录</a></li>
+              <li data-toggle="modal" data-target="#registerModal"><a style="cursor: pointer">注册</a></li>-->
               
             </ul>
           </div>
@@ -257,9 +249,10 @@
           </div>
           <div class="modal-footer">
               <span id="registerMsg" class="tip_login" style="opacity: 1;color:red;"></span>
-              <button type="submit" class="btn btn-primary" id="btn-register">注册</button>
+              <button type="button" class="btn btn-primary" id="btn-register">注册</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
           </div>
+            <div id="register_warning"></div>
         </form>
       </div>
 
@@ -288,8 +281,8 @@
         });
 
         $.ajax({
-              url:"",
-              data:{column:"group-information"},
+              url:"http://localhost:8080/article/getlink",
+              data:{lists:5,column:"group-information"},
               type:"post",
               dataType:"json",
               success: function(data){
@@ -302,8 +295,8 @@
           });
 
         $.ajax({
-            url:"",
-            data:{column:"achievement"},
+            url:"http://localhost:8080/article/getlink",
+            data:{lists:5,column:"achievement"},
             type:"post",
             dataType:"json",
             success: function(data){
@@ -316,8 +309,8 @@
         });
 
         $.ajax({
-            url:"",
-            data:{column:"this-week-work"},
+            url:"http://localhost:8080/article/getlink",
+            data:{lists:5,column:"this-week-work"},
             type:"post",
             dataType:"json",
             success: function(data){
@@ -340,6 +333,7 @@
             },
             dataType:"json",
             success:function(result){
+
                 if(result.status == "success"){
                     //如果登录成功则跳转到成功页面
                     alert("登录成功");
@@ -354,34 +348,46 @@
     });
 
     $("#btn-register").click(function(){
-        $.ajax({
-            url:"http://localhost:8080/user/register",
-            type:"post",
-            data:{
-                uname2:$("input[name=uname2]").val(),
-                uemail2:$("input[name=uemail2]").val(),
-                upwd2:$("input[name=upwd2]").val()
-            },
-            dataType:"json",
-            success:function(result){
-                alert(result.status);
-                if(result.status == "success"){
-                    alert("注册成功，用户名为"+result.uname);
-                }else{
-                    alert("注册失败,用户名或邮箱已存在");
+        var t = document.getElementById("uemail2").value;
+        var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+        if(!reg.test(t)){
+            var tmp = "<div class=\"alert alert-warning\" role=\"alert\">\n" +
+                "        <strong>Warning!</strong> 邮箱规则错误\n" +
+                "      </div>";
+            $("#register_warning").html(tmp);
+        }else{
+            $.ajax({
+                url:"http://localhost:8080/user/register",
+                type:"post",
+                data:{
+                    uname2:$("input[name=uname2]").val(),
+                    uemail2:$("input[name=uemail2]").val(),
+                    upwd2:$("input[name=upwd2]").val()
+                },
+                dataType:"json",
+                success:function(result){
+                    if(result.status == "success"){
+                        alert("注册成功，用户名为"+result.uname);
+                        window.location.href="index.html";
+                    }else if(result.status == "用户名已存在"){
+                        var tmp = "<div class=\"alert alert-warning\" role=\"alert\">\n" +
+                            "        <strong>Warning!</strong> 邮箱已存在\n" +
+                            "      </div>";
+                        $("#register_warning").html(tmp);
+                    }
+                },
+                error:function(jqXHR, textStatus, errorThrown){
+                    /*弹出jqXHR对象的信息*/
+                    alert(jqXHR.responseText);
+                    alert(jqXHR.status);
+                    alert(jqXHR.readyState);
+                    alert(jqXHR.statusText);
+                    /*弹出其他两个参数的信息*/
+                    alert(textStatus);
+                    alert(errorThrown);
                 }
-            },
-            error:function(jqXHR, textStatus, errorThrown){
-                /*弹出jqXHR对象的信息*/
-                alert(jqXHR.responseText);
-                alert(jqXHR.status);
-                alert(jqXHR.readyState);
-                alert(jqXHR.statusText);
-                /*弹出其他两个参数的信息*/
-                alert(textStatus);
-                alert(errorThrown);
-            }
-        });
+            });
+        }
     });
 </script>
 </html>
