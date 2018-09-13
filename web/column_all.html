@@ -7,7 +7,7 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Dashboard Template for Bootstrap</title>
+    <title>总栏目表</title>
 
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -62,8 +62,7 @@
             <ul class="nav nav-sidebar">
                 <li><a>各列栏目列表</a></li>
             </ul>
-            <ul class="nav nav-sidebar">
-
+            <ul class="nav nav-sidebar" id="column_display">
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -91,5 +90,44 @@
 </div>
 
 </body>
+<script type="text/javascript">
+    $(document).ready(function(e){
+        $.ajax({
+            url:"http://localhost:8080/article/getcolumn",
+            type:"post",
+            dataType:"json",
+            success:function(result){
+                var s = "";
+                for(var i = 0;i<result.column.length;i++){
+                    //s+="<li><a class=\"column\" id=\"column"+i+"\" style=\"cursor: pointer\">"+result.column[i]+"</a></li>";
+                    s+="<li class=\"column\" id=\"column"+i+"\"><a style=\"cursor: pointer\">"+result.column[i]+"</a></li>";
+                }
+                $("#column_display").html(s);
+            }
+        })
+
+    })
+        $(document).on("click",".column",function(){
+            var id = $(this).attr("id");
+            var tmp = $("#"+id).text();
+            $.ajax({
+                url:"http://localhost:8080/article/getarticlelink",
+                type:"post",
+                data:{
+                    lists:10,
+                    column:tmp
+                },
+                dataType:"json",
+                success:function(data){
+                    var s = "";
+                    for(var i = 0;i<data.article.length;i++){
+                        s += "<tr><td>"+data.article[i].id+"</td><td>"+data.article[i].title+"</td><td>"+data.article[i].author+"</td><td>"+data.article[i].time+"</td></tr>";
+                    }
+                    $("#display_tbody").html(s);
+                }
+            })
+        });
+
+</script>
 
 </html>
