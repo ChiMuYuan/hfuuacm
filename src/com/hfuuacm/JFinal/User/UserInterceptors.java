@@ -29,8 +29,11 @@ public class UserInterceptors implements Interceptor {
     private boolean LoginInterceptors(Controller controller) {
         String password = controller.getPara("password");
         String Username = controller.getPara("uname");
+        String sessionuid = controller.getSessionAttr("uid");
+        String sessionUsername = controller.getSessionAttr("Username");
+        String sessionpermission = controller.getSessionAttr("permission");
 
-        if (password == null || Username == null)
+        if ((password == null || Username == null) && (sessionuid == null || sessionUsername == null || sessionpermission == null))
             return true;
         return false;
     }

@@ -5,7 +5,6 @@ import com.hfuuacm.JFinal.Mysql.Subject;
 import com.hfuuacm.JFinal.Mysql.User;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
