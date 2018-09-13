@@ -10,6 +10,7 @@ public class sessionInterceptors implements Interceptor {
         Controller controller = invocation.getController();
         if (controller.getSessionAttr("uid") == null || controller.getSessionAttr("Username") == null
                 || controller.getSessionAttr("permission") == null) {
+
             String uid = controller.getCookie("uid");
             String auth_token = controller.getCookie("auth_token");
 

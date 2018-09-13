@@ -21,6 +21,9 @@ public class UserInterceptors implements Interceptor {
         } else if(key.equals("/user/logout") && LogoutInterceptors(controller)) {
             controller.redirect("/");
             return;
+        } else if (key.equals("/user/getmember") && GetMemberInterceptors(controller)) {
+            controller.redirect("/");
+            return;
         }
 
         invocation.invoke();
@@ -33,7 +36,8 @@ public class UserInterceptors implements Interceptor {
         String sessionUsername = controller.getSessionAttr("Username");
         String sessionpermission = controller.getSessionAttr("permission");
 
-        if ((password == null || Username == null) && (sessionuid == null || sessionUsername == null || sessionpermission == null))
+        if ((password == null || Username == null) &&
+                (sessionuid == null || sessionUsername == null || sessionpermission == null))
             return true;
         return false;
     }
@@ -63,6 +67,15 @@ public class UserInterceptors implements Interceptor {
         String uid = controller.getSessionAttr("uid");
 
         if (uid == null)
+            return true;
+        return false;
+    }
+
+    private boolean GetMemberInterceptors(Controller controller) {
+        String uid = controller.getSessionAttr("uid");
+        String Username = controller.getSessionAttr("Username");
+
+        if (uid == null || Username == null)
             return true;
         return false;
     }
