@@ -52,7 +52,7 @@ public class UserController extends Controller {
             user.set("auth_token", auth_tocken).update();
 
             setSessionAttr("uid", user.getStr("id"));
-            setSessionAttr("Username", uname);
+            setSessionAttr("Username", user.getStr("Username"));
             setSessionAttr("permission", user.getStr("permission"));
 
             setAttr("status", "success");
@@ -114,10 +114,11 @@ public class UserController extends Controller {
         String uid = getSessionAttr("uid");
 
         User user = User.dao.findById("uid");
-        user.set("auth_token", "").update();
-        setSessionAttr("uid", "");
-        setSessionAttr("Username", "");
-        setSessionAttr("perimission", "");
+        user.set("auth_token", null).update();
+        setSessionAttr("uid", null);
+        setSessionAttr("Username", null);
+        setSessionAttr("permission", null);
+        setCookie("auth_token", null, 0);
         redirect("/");
     }
 
@@ -127,7 +128,7 @@ public class UserController extends Controller {
         int number = Integer.parseInt(getPara("lists"));
         int stid = number * (page-1);
 
-        List<User> all_userList = User.dao.find("SELECT * FROM User WHERE id > ? LIMIT ?, ?",
+        List<User> all_userList = User.dao.find("SELECT * FROM User WHERE permission >= ? LIMIT ?, ?",
                 sessionpermission == null ? 3 : Integer.parseInt(sessionpermission), stid, number);
         List<Object> userList = new ArrayList<>();
 
@@ -138,7 +139,7 @@ public class UserController extends Controller {
             map.put("id", user.get("id"));
             map.put("Username", user.get("Username"));
             map.put("email", user.getStr("email"));
-            int permission = user.getInt("id");
+            int permission = user.getInt("permission");
 
             if (permission == 0)
                 map.put("permission", "root");
@@ -163,7 +164,7 @@ public class UserController extends Controller {
         Map<Object, Object> map = new HashMap<>();
         map.put("status", "success");
         map.put("member", userList);
-        map.put("all_page", Math.ceil((double) all_userList.size() / number));
+        map.put("all_page", Math.ceil((double) User.dao.find("SELECT * FROM User").size() / number));
 
         renderJson(map);
     }

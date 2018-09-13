@@ -21,11 +21,11 @@ public class ArticleInterceptors implements Interceptor {
 
     private boolean GetlinkInterceptor(Controller controller) {
         String number = controller.getPara("lists");
-        String page  = controller.getPara("page");
+        String page = controller.getPara("page");
         String column = controller.getPara("column");
 
         if (number == null || !StringUtils.isNumber(number) || page != null || !StringUtils.isNumber(page) ||
-                (column != null && Subject.dao.findFirst("SELECT * FROM subject WHERE topic=?", column) != null))
+                (column != null && Subject.dao.findFirst("SELECT * FROM subject WHERE topic=?", column) == null))
             return true;
         return false;
     }
