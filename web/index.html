@@ -152,19 +152,19 @@
       <h2>组内通知</h2>
       <ul id="group-information" style="list-style-type:none">
       </ul>
-      <p><a class="btn btn-default" href="#" role="button">more &raquo;</a></p>
+      <p><a class="btn btn-default" href="column_all.html" role="button">more &raquo;</a></p>
     </div><!-- /.col-lg-4 -->
     <div class="col-lg-4">
       <img class="img-circle" src="https://i.loli.net/2018/09/03/5b8c8e9eb5bf6.png" alt="Generic placeholder image" width="140" height="140">
       <h2>成绩公告</h2>
       <ul id="achievement"></ul>
-      <p><a class="btn btn-default" href="#" role="button">more &raquo;</a></p>
+      <p><a class="btn btn-default" href="column_all.html" role="button">more &raquo;</a></p>
     </div><!-- /.col-lg-4 -->
     <div class="col-lg-4">
       <img class="img-circle" src="https://i.loli.net/2018/09/03/5b8c8ee59f4ce.jpg" alt="Generic placeholder image" width="140" height="140">
       <h2>本周工作</h2>
       <ul id="this-week-work"></ul>
-      <p><a class="btn btn-default" href="#" role="button">more &raquo;</a></p>
+      <p><a class="btn btn-default" href="column_all.html" role="button">more &raquo;</a></p>
     </div><!-- /.col-lg-4 -->
   </div><!-- /.row -->
 
@@ -292,13 +292,13 @@
 
         $.ajax({
               url:"http://localhost:8080/article/getarticlelink",
-              data:{lists:5,column:"组内通知"},
+              data:{page:1,lists:5,column:"组内通知"},
               type:"post",
               dataType:"json",
               success: function(data){
                   var s = "";
                   for(var i = 0;i<data.article.length;i++){
-                      s+="<li>"+data.article[i].title+"</li>";
+                      s+="<li style=\"list-style:none;\">"+data.article[i].title+"</li>";
                   }
                   $("#group-information").html(s);
               }
@@ -306,13 +306,13 @@
 
         $.ajax({
             url:"http://localhost:8080/article/getarticlelink",
-            data:{lists:5,column:"成绩公告"},
+            data:{page:1,lists:5,column:"成绩公告"},
             type:"post",
             dataType:"json",
             success: function(data){
                 var s = "";
                 for(var i = 0;i<data.article.length;i++){
-                    s+="<li>"+data.article[i].title+"</li>";
+                    s+="<li style=\"list-style:none;\">"+data.article[i].title+"</li>";
                 }
                 $("#achievement").html(s);
             }
@@ -320,13 +320,13 @@
 
         $.ajax({
             url:"http://localhost:8080/article/getarticlelink",
-            data:{lists:5,column:"本周工作"},
+            data:{page:1,lists:5,column:"本周工作"},
             type:"post",
             dataType:"json",
             success: function(data){
                 var s = "";
                 for(var i = 0;i<data.article.length;i++){
-                    s+="<li>"+data.article[i].title+"</li>";
+                    s+="<li style=\"list-style:none;\">"+data.article[i].title+"</li>";
                 }
                 $("#this-week-work").html(s);
             }
@@ -345,11 +345,13 @@
             success:function(result){
                 if(result.status == "success"){
                     //如果登录成功则跳转到成功页面
-                    alert("登录成功");
                     window.location.href="index.html";
                 }else{
                     //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
-                    alert("您输入的用户名或者密码不正确");
+                    var tmp = "<div class=\"alert alert-danger\" role=\"alert\">\n" +
+                        "        <strong>Wrong!</strong> 您输入的用户名或者密码不正确\n" +
+                        "      </div>"
+
                 }
             }
         });

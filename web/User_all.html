@@ -43,12 +43,9 @@
             </button>
             <a class="navbar-brand" href="#">成员榜</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">返回主页</a></li>
-                <li><a href="#">设置</a></li>
-                <li><a href="#">个人信息</a></li>
-                <li><a href="#">帮助</a></li>
+        <div id="navbar" class="navbar-collapse collapse" >
+            <ul class="nav navbar-nav navbar-right" id="user">
+
             </ul>
             <form class="navbar-form navbar-right">
                 <input type="text" class="form-control" placeholder="搜索...">
@@ -86,6 +83,7 @@
                 </table>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -93,6 +91,27 @@
     var page = 1;
     var maxys;
     $(document).ready(function(e){
+        $.ajax({
+            url:"http://localhost:8080/user/login",
+            type:"post",
+            dataType:"json",
+            success:function(result){
+                if(result.status == "success"){
+                    var s = "<li><a href=\"index.html\">返回主页</a></li><li class=\"dropdown\">\n" +
+                        "                <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">"+result.uname+" <span class=\"caret\"></span></a>\n" +
+                        "                <ul class=\"dropdown-menu\">\n" +
+                        "                  <li><a href=\"#\">个人信息</a></li>\n" +
+                        "                  <li><a href=\"http://localhost:8080/user/logout\">注销</a></li>\n" +
+                        "                </ul>\n" +
+                        "              </li>"
+                    $("#user").html(s);
+                }else{
+                    var s = "<li><a href=\"index.html\">返回主页</a></li>";
+                    $("#user").html(s);
+                }
+            }
+        });
+
         page = 1;
         Load();
     });
@@ -149,14 +168,19 @@
                     if(data.member[i].permission == "栏目管理员"){
                         //s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>"+data.member[i].column+"</td></tr>";
                         s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>";
-                        s +=  "栏目管理员：<select>"
+                        s +=  "栏目管理员：<select>";
                         for(var j=0;j<data.member[i].column.length;j++){
                             s += "<option value = '"+data.member[i].column[j].name+"'> " +data.member[i].column[j].name ;
                             s += "</option>";
                         }
-                        s += "</select></td></tr>";
+                        s += "</select>";
+                        //s += "<p align='right' class='button'><button>修改</button> <button>删除</button></p>";
+                        s +="<div style=\"padding: 0px 10px;float: right\"><button data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
+                        s += "</div></td></tr>";
                     }else{
-                        s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>"+"普通用户"+"</td></tr>";
+                        s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>"+data.member[i].permission;
+                        s +="<div style=\"padding: 0px 10px;float: right\"><button data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
+                        s += "</div></td></tr>";
 
                     }
                 }
@@ -184,6 +208,36 @@
         Load();
     })
 </script>
+
+<!-- 模态框（modifyModal） -->
+<div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h2 class="modal-title" id="myModalLabel" align="center">修改</h2>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（deleteModal） -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h2 class="modal-title" id="myModalLabel2" align="center">删除</h2>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 
 </body>
 </html>

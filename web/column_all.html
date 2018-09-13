@@ -44,11 +44,8 @@
             <a class="navbar-brand" href="#">栏目榜</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">返回主页</a></li>
-                <li><a href="#">设置</a></li>
-                <li><a href="#">个人信息</a></li>
-                <li><a href="#">帮助</a></li>
+            <ul class="nav navbar-nav navbar-right" id="user">
+
             </ul>
             <form class="navbar-form navbar-right">
                 <input type="text" class="form-control" placeholder="搜索...">
@@ -116,6 +113,27 @@
     var col = "";
 
     $(document).ready(function(e){
+        $.ajax({
+            url:"http://localhost:8080/user/login",
+            type:"post",
+            dataType:"json",
+            success:function(result){
+                if(result.status == "success"){
+                    var s = "<li><a href=\"index.html\">返回主页</a></li><li class=\"dropdown\">\n" +
+                        "                <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">"+result.uname+" <span class=\"caret\"></span></a>\n" +
+                        "                <ul class=\"dropdown-menu\">\n" +
+                        "                  <li><a href=\"#\">个人信息</a></li>\n" +
+                        "                  <li><a href=\"http://localhost:8080/user/logout\">注销</a></li>\n" +
+                        "                </ul>\n" +
+                        "              </li>"
+                    $("#user").html(s);
+                }else{
+                    var s = "<li><a href=\"index.html\">返回主页</a></li>";
+                    $("#user").html(s);
+                }
+            }
+        });
+
         $.ajax({
             url:"http://localhost:8080/article/getcolumn",
             type:"post",
