@@ -1,1 +1,8 @@
-
+*.jar
+*.properties
+*.iml
+/.idea
+/out
+*/Test
+*/test
+test.*
