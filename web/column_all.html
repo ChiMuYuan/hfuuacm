@@ -197,7 +197,9 @@
                     $("#fenye").html(str);
                     var s = "";
                     for(var i = 0;i<data.article.length;i++){
-                        s += "<tr><td>"+data.article[i].id+"</td><td>"+data.article[i].title+"</td><td>"+data.article[i].author+"</td><td>"+data.article[i].time+"</td></tr>";
+                        s += "<tr><td>"+data.article[i].id+"</td><td>"+data.article[i].title+"</td><td>"+data.article[i].author+"</td><td>"+data.article[i].time;
+                        s +="<div style=\"padding: 0px 10px;float: right\"><button data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
+                        s += "</div></td></tr>";
                     }
                     $("#display_tbody").html(s);
                 }

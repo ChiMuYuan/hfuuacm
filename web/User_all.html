@@ -175,11 +175,11 @@
                         }
                         s += "</select>";
                         //s += "<p align='right' class='button'><button>修改</button> <button>删除</button></p>";
-                        s +="<div style=\"padding: 0px 10px;float: right\"><button data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
+                        s +="<div style=\"padding: 0px 10px;float: right\"><button cnt = '"+data.member[i].id+"' id=\"modify\" data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button id=\"delete\" cnt = '"+data.member[i].id+"' data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
                         s += "</div></td></tr>";
                     }else{
                         s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>"+data.member[i].permission;
-                        s +="<div style=\"padding: 0px 10px;float: right\"><button data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
+                        s +="<div style=\"padding: 0px 10px;float: right\"><button cnt = '"+data.member[i].id+"' id=\"modify\" data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button id=\"delete\" cnt = '"+data.member[i].id+"' data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
                         s += "</div></td></tr>";
 
                     }
@@ -203,9 +203,65 @@
         }
         Load();
     })
+
     $(document).on("click",".list",function(){
         page = parseInt($(this).attr("bs"));
         Load();
+    })
+
+    $(document).on("click","#delete",function(){
+        var t = parseInt($(this).attr("cnt"));
+        var s = "<input type=\"hidden\" name=\"column\" value=\""+t+"\">";
+        s += "<button type=\"submit\" class=\"btn btn-primary\" id=\"btn-post\">确认</button>\n" +
+            "                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">取消</button>";
+        $("#ed").html(s);
+    })
+
+    $(document).on("click","#modify",function(){
+        var t = parseInt($(this).attr("cnt"));
+        $.ajax({
+            url:"http://localhost:8080/user/getprofile",
+            type:"post",
+            data:{
+                id:t
+            },
+            dataType:"json",
+            success:function(data){
+                var s = "<form url='http://localhost:8080/user/updateprofile' action='post' class=\"form-horizontal\" role=\"form\">\n" +
+                    "                    <div class=\"form-group\">\n" +
+                    "                        <label for=\"Username\" class=\"col-sm-2 control-label\">用户名</label>\n" +
+                    "                        <div class=\"col-sm-9\">\n" +
+                    "                            <input type=\"text\" id=\"Username\" name=\"Username\" class=\"form-control well\" value='"+data.Username+"' placeholder=\""+data.Username+"\"/>\n" +
+                    "                        </div>\n" +
+                    "                    </div>\n" +
+                    "                    <div class=\"form-group\">\n" +
+                    "                        <label for=\"email\" class=\"col-sm-2 control-label\">邮箱</label>\n" +
+                    "                        <div class=\"col-sm-9\">\n" +
+                    "                            <input type=\"text\" id=\"email\" name=\"email\" class=\"form-control well\" value='"+data.email+"' placeholder=\""+data.email+"\"/>\n" +
+                    "                        </div>\n" +
+                    "                    </div>\n" +
+                    "                    <div class=\"form-group\">\n" +
+                    "                        <label class=\"col-sm-2 control-label\">权限</label>\n" +
+                    "                        <div class=\"col-sm-9\">\n" +
+                    "                            <ul style=\"list-style:none\">\n";
+
+                        for(var i=0;i<data.all_column.length;i++){
+                            s+="<li><input type='checkbox' name='column' value='"+data.all_column[i].id+"'>"+data.all_column[i].name+" </li>";
+                        }
+
+                    s+="                            </ul>\n" +
+                    "                        </div>\n" +
+                    "                    </div>\n" +
+                    "                    <div class=\"modal-footer\">\n" +
+                    "                        <span id=\"registerMsg\" class=\"tip_login\" style=\"opacity: 1;color:red;\"></span>\n" +
+                    "                        <button type=\"submit\" class=\"btn btn-primary\" id=\"btn-post\">提交</button>\n" +
+                    "                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">取消</button>\n" +
+                    "                    </div>\n" +
+                    "                </form>";
+                $("#st").html(s);
+            }
+        })
+
     })
 </script>
 
@@ -217,8 +273,36 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h2 class="modal-title" id="myModalLabel" align="center">修改</h2>
             </div>
-            <div class="modal-body">
-
+            <div class="modal-body" id="st">
+                <!--<form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="Username" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="Username" name="Username" class="form-control well" placeholder="请输入用户名"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="email" name="email" class="form-control well" placeholder="请输入邮箱"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">权限</label>
+                        <div class="col-sm-9">
+                            <ul style="list-style:none">
+                                <li><input type="checkbox" value="中国">系统管理员</li>
+                                <li><input type="checkbox" value="英国">栏目管理员</li>
+                                <li><input type="checkbox" value="美国">普通成员</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span id="registerMsg" class="tip_login" style="opacity: 1;color:red;"></span>
+                        <button type="button" class="btn btn-primary" id="btn-post">提交</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>-->
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -230,11 +314,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h2 class="modal-title" id="myModalLabel2" align="center">删除</h2>
+                <h2 class="modal-title" id="myModalLabel2" align="center">是否删除？</h2>
             </div>
-            <div class="modal-body">
-
-            </div>
+                <form url="http://localhost:8080/user/deleteuser" action="post">
+                    <div class="modal-footer" id="ed">
+                        <button type="submit" class="btn btn-primary" id="btn-post">确认</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
