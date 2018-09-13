@@ -1,12 +1,18 @@
 package com.hfuuacm.JFinal.User;
 
+import com.hfuuacm.JFinal.Mysql.Subject;
 import com.hfuuacm.JFinal.Mysql.User;
 import com.hfuuacm.JFinal.Main.sessionInterceptors;
 import com.hfuuacm.Tools.Encryption;
+import com.hfuuacm.Tools.JsonTools;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Before({sessionInterceptors.class, UserInterceptors.class})
@@ -115,4 +121,50 @@ public class UserController extends Controller {
         redirect("/");
     }
 
+    public void getmember() {
+        String sessionpermission = getSessionAttr("permission");
+        int page = Integer.parseInt(getPara("page"));
+        int number = Integer.parseInt(getPara("lists"));
+        int stid = number * (page-1);
+
+        List<User> all_userList = User.dao.find("SELECT * FROM User WHERE id > ? LIMIT ?, ?",
+                sessionpermission == null ? 3 : Integer.parseInt(sessionpermission), stid, number);
+        List<Object> userList = new ArrayList<>();
+
+        for (int i = 0; i < all_userList.size(); i ++) {
+            User user = all_userList.get(i);
+
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", user.get("id"));
+            map.put("Username", user.get("Username"));
+            map.put("email", user.getStr("email"));
+            int permission = user.getInt("id");
+
+            if (permission == 0)
+                map.put("permission", "root");
+            else if (permission == 1)
+                map.put("permission", "系统管理员");
+            else if(permission == 2) {
+                map.put("permission", "栏目管理员");
+                List<Object> columnList = new ArrayList<>();
+                List<Subject> subjectList = Subject.dao.find(
+                        "SELECT topic FROM subject JOIN permission ON subject.id = subject_id WHERE user_id = ?",
+                        user.getInt("id"));
+
+                JsonTools.subjectGetnamelist(subjectList, columnList);
+
+                map.put("column", columnList);
+            } else
+                map.put("permission", "普通用户");
+
+            userList.add(map);
+        }
+
+        Map<Object, Object> map = new HashMap<>();
+        map.put("status", "success");
+        map.put("member", userList);
+        map.put("all_page", Math.ceil((double) all_userList.size() / number));
+
+        renderJson(map);
+    }
 }

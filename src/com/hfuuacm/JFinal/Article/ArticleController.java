@@ -3,6 +3,7 @@ package com.hfuuacm.JFinal.Article;
 import com.hfuuacm.JFinal.Mysql.Article;
 import com.hfuuacm.JFinal.Mysql.Subject;
 import com.hfuuacm.JFinal.Mysql.User;
+import com.hfuuacm.Tools.JsonTools;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import java.util.ArrayList;
@@ -18,12 +19,7 @@ public class ArticleController extends Controller {
         List<Subject> all_subject = Subject.dao.find("SELECT * FROM subject");
         List<Object> subjectList = new ArrayList<>();
 
-        for (int i = 0; i < all_subject.size(); i ++) {
-            Subject subject = all_subject.get(i);
-            Map<Object, Object> subject_name = new HashMap<>();
-            subject_name.put("name", subject.getStr("topic"));
-            subjectList.add(subject_name);
-        }
+        JsonTools.subjectGetnamelist(all_subject, subjectList);
 
         Map<Object, Object> Json = new HashMap<>();
         Json.put("status", "success");
@@ -34,23 +30,21 @@ public class ArticleController extends Controller {
 
     public void getarticlelink() {
         String column = getPara("column");
-        String page = getPara("page");
-        String number = getPara("lists");
+        int page = Integer.parseInt(getPara("page"));
+        int number = Integer.parseInt(getPara("lists"));
         int stid = 0, all_page = 0;
 
         List<Article> all_articleList;
         if (column != null) {
-            if (page != null)
-                stid += 10 * Integer.parseInt(page);
+                stid += number * (page-1);
 
             Subject subject = Subject.dao.findFirst("SELECT * FROM subject WHERE topic=?", column);
             all_page = subject.getInt("number");
             all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?,?",
-                    subject.getStr("id"), stid, Integer.parseInt(number));
+                    subject.getStr("id"), stid, number);
         }
         else
-            all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?",
-                    Integer.parseInt(number));
+            all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?", number);
 
         List<Object> articleList = new ArrayList<>();
         for (int i = 0; i < all_articleList.size(); i ++) {
@@ -66,7 +60,7 @@ public class ArticleController extends Controller {
         Map<Object, Object> Json = new HashMap<>();
         Json.put("status", "success");
         Json.put("article", articleList);
-        Json.put("all_page", Math.ceil(all_page / 10.0));
+        Json.put("all_page", Math.ceil((double)all_page / number));
 
         renderJson(Json);
     }
