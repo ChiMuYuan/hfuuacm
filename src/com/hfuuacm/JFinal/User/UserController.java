@@ -214,4 +214,9 @@ public class UserController extends Controller {
         renderJson(JSON);
     }
 
+    public void updateprofile() {
+        String Username = getPara("uname");
+        String password = getPara("upwd");
+
+    }
 }
