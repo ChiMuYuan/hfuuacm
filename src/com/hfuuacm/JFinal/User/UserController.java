@@ -1,5 +1,6 @@
 package com.hfuuacm.JFinal.User;
 
+import com.alibaba.druid.util.StringUtils;
 import com.hfuuacm.JFinal.Mysql.Subject;
 import com.hfuuacm.JFinal.Mysql.User;
 import com.hfuuacm.JFinal.Main.sessionInterceptors;
@@ -7,6 +8,8 @@ import com.hfuuacm.Tools.Encryption;
 import com.hfuuacm.Tools.JsonTools;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import org.omg.CORBA.OBJ_ADAPTER;
+
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class UserController extends Controller {
         if (uname.indexOf("@") != -1)
             user = User.dao.findFirst("SELECT * FROM User WHERE email=?", uname);
         else
-            user = User.dao.findFirst("SELECT * FROM User WHERE Username=?'", uname);
+            user = User.dao.findFirst("SELECT * FROM User WHERE Username=?", uname);
         if (user == null) {
             renderJson("status", "密码或邮箱错误");
             return;
@@ -113,7 +116,7 @@ public class UserController extends Controller {
     public void logout() {
         String uid = getSessionAttr("uid");
 
-        User user = User.dao.findById("uid");
+        User user = User.dao.findById(uid);
         user.set("auth_token", null).update();
         setSessionAttr("uid", null);
         setSessionAttr("Username", null);
@@ -168,4 +171,34 @@ public class UserController extends Controller {
 
         renderJson(map);
     }
+
+    public void getprofile() {
+        int find_id = Integer.parseInt(getSessionAttr("uid"));
+
+        String Para_id = getPara("id");
+        if (Para_id != null)
+            find_id = Integer.parseInt(Para_id);
+
+        User user = User.dao.findById(find_id);
+        int permission = user.getInt("permission");
+
+        Map<Object, Object> JSON = new HashMap<>();
+
+        if (permission == 2) {
+            List<Subject> subjectList = Subject.dao.find(
+                    "SELECT topic FROM subject JOIN permission ON subject.id = subject_id WHERE user_id = ?",
+                    user.getInt("id"));
+            List<Object> objectList = new ArrayList<>();
+            JsonTools.subjectGetnamelist(subjectList, objectList);
+            JSON.put("column", objectList);
+        }
+
+        JSON.put("status", "success");
+        JSON.put("Username", user.getStr("Username"));
+        JSON.put("email", user.getStr("email"));
+        JSON.put("permission", permission);
+
+        renderJson(JSON);
+    }
+
 }
