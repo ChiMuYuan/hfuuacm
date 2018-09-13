@@ -31,6 +31,7 @@
 
 <body>
 
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -40,7 +41,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">成员榜</a>
+            <a class="navbar-brand" href="#">栏目榜</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -63,15 +64,35 @@
                 <li><a>各列栏目列表</a></li>
             </ul>
             <ul class="nav nav-sidebar" id="column_display">
+
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header" id ="category"></h1>
             <div class="table-responsive">
                 <ul class="pagination" id="fenye">
-
+                    <!--<li class="paginate_button page-item previous" id="listContest_previous">
+                        <a href="#" aria-controls="listContest" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+                    </li>
+                    <li class="paginate_button page-item active" class='current'>
+                        <a href="#" aria-controls="listContest" data-dt-idx="1" tabindex="0" class="page-link">1</a>
+                    </li>
+                    <li class="paginate_button page-item">
+                        <a href="#" aria-controls="listContest" tabindex="0" class="page-link">2</a>
+                    </li>
+                    <li class="paginate_button page-item">
+                        <a href="#" aria-controls="listContest" data-dt-idx="3" tabindex="0" class="page-link">3</a>
+                    </li>
+                    <li class="paginate_button page-item">
+                        <a href="#" aria-controls="listContest" data-dt-idx="4" tabindex="0" class="page-link">4</a>
+                    </li>
+                    <li class="paginate_button page-item">
+                        <a href="#" aria-controls="listContest" data-dt-idx="5" tabindex="0" class="page-link">5</a>
+                    </li>
+                    <li class="paginate_button page-item next" id="listContest_next">
+                        <a href="#" aria-controls="listContest" data-dt-idx="8" tabindex="0" class="page-link">Next</a>
+                    </li>-->
                 </ul>
-                <input type="hidden" value="1" id="page" />
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -91,6 +112,9 @@
 
 </body>
 <script type="text/javascript">
+    var page = 1;
+    var col = "";
+
     $(document).ready(function(e){
         $.ajax({
             url:"http://localhost:8080/article/getcolumn",
@@ -108,17 +132,51 @@
 
     })
         $(document).on("click",".column",function(){
+            page = 1;
             var id = $(this).attr("id");
-            var tmp = $("#"+id).text();
+            col = $("#"+id).text();
+            Load();
+        });
+
+        function Load(){
             $.ajax({
                 url:"http://localhost:8080/article/getarticlelink",
                 type:"post",
                 data:{
+                    page:page,
                     lists:10,
-                    column:tmp
+                    column:col
                 },
                 dataType:"json",
                 success:function(data){
+                    //总页数
+                    var maxys = data.all_page;
+                    var str = "";
+                    var minys = 1;
+                    //str += "<span>总共:"+maxys+"页 </span> ";
+                    str += "<li class=\"paginate_button page-item previous\" id=\"listContest_previous\">\n" +
+                        "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"0\" tabindex=\"0\" class=\"page-link\">上一页</a>\n" +
+                        "                    </li>";
+                    for(var i = page - 2; i < page + 3; i++) {
+                        if(i >= minys && i <= maxys) {
+                            if(i == page) {
+                                //str += "<li class='paginate_button page-item active' class='current' bs='" + i + "'>" + i + "</li>  ";
+                                str +="<li class=\"paginate_button page-item\" class='current' bs='"+i+"'>\n" +
+                                    "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
+                                    "                    </li>";
+                            } else {
+                                //str += "<span class='list' bs='" + i + "'>" + i + "</span>  ";
+                                str += "<li class=\"paginate_button page-item\" class='list' bs='\"+i+\"'>\n" +
+                                    "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
+                                    "                    </li>"
+                            }
+
+                        }
+                    }
+                    str += "<li class=\"paginate_button page-item next\" id=\"listContest_next\">\n" +
+                        "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"8\" tabindex=\"0\" class=\"page-link\">下一页</a>\n" +
+                        "                    </li>";
+                    $("#fenye").html(str);
                     var s = "";
                     for(var i = 0;i<data.article.length;i++){
                         s += "<tr><td>"+data.article[i].id+"</td><td>"+data.article[i].title+"</td><td>"+data.article[i].author+"</td><td>"+data.article[i].time+"</td></tr>";
@@ -126,8 +184,26 @@
                     $("#display_tbody").html(s);
                 }
             })
-        });
+        }
+        $("#prev").click(function(){
+            page = page - 1;
+            if(page < 1){
+                page = 1;
+            }
+            Load();
+        })
+        $("next").click(function(){
+            page = page + 1;
+            if(page > maxys){
+                page = maxys;
+            }
+            Load();
 
+        })
+        $(".list").click(function(){
+            page = parseInt($(this).attr("bs"));
+            Load();
+        })
 </script>
 
 </html>

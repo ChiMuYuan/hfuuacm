@@ -55,28 +55,16 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li class="active"><a href="User_all.jsp">总览 <span class="sr-only">(current)</span></a></li>
-                <li><a href="User_admin.jsp">系统管理员</a></li>
-                <li><a href="User_column.jsp">栏目管理员</a></li>
-                <li><a href="User_common.jsp">普通成员</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">rating榜</a></li>
-                <li><a href="">历年成绩</a></li>
-                <li><a href="">组内通知</a></li>
-                <li><a href="">本周工作</a></li>
-                <li><a href="">更多栏目</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">hfuu开源社区</a></li>
-                <li><a href="">hfuu练习测试平台</a></li>
-                <li><a href="">队内博客链接</a></li>
+                <li class="active"><a>总览 <span class="sr-only">(current)</span></a></li>
+                <li class="user" id="0"><a style="cursor: pointer">系统管理员</a></li>
+                <li class="user" id="1"><a style="cursor: pointer">栏目管理员</a></li>
+                <li class="user" id="2"><a style="cursor: pointer">普通成员</a></li>
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header">总成员表</h1>
             <div class="table-responsive">
-                <ul class="pagination">
+                <ul class="pagination" id="fenye">
                     <li class="paginate_button page-item previous" id="listContest_previous">
                         <a href="#" aria-controls="listContest" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
                     </li>
@@ -108,13 +96,7 @@
                         <th>permission</th>
                     </tr>
                     </thead>
-                    <tbody id="">
-                    <tr>
-                        <td>1,001</td>
-                        <td>Lorem</td>
-                        <td>ipsum</td>
-                        <td>dolor</td>
-                    </tr>
+                    <tbody id="display_tbody">
                     </tbody>
                 </table>
             </div>
@@ -122,7 +104,95 @@
     </div>
 </div>
 
+<script type="text/javascript">
+    var page = 1;
 
+    $(document).on("click",".user",function(){
+        page = 1;
+        var id = $(this).attr("id");
+        col = $("#"+id).text();
+        Load();
+    });
+
+    function Load(){
+        $.ajax({
+            url:"http://localhost:8080/user/getmember",
+            type:"post",
+            data:{
+                page:page,
+                lists:10,
+            },
+            dataType:"json",
+            success:function(data){
+                //总页数
+                var maxys = data.all_page;
+                var str = "";
+                var minys = 1;
+                //str += "<span>总共:"+maxys+"页 </span> ";
+                str += "<li class=\"paginate_button page-item previous\" id=\"listContest_previous\">\n" +
+                    "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"0\" tabindex=\"0\" class=\"page-link\">上一页</a>\n" +
+                    "                    </li>";
+                for(var i = page - 2; i < page + 3; i++) {
+                    if(i >= minys && i <= maxys) {
+                        if(i == page) {
+                            //str += "<li class='paginate_button page-item active' class='current' bs='" + i + "'>" + i + "</li>  ";
+                            str +="<li class=\"paginate_button page-item\" class='current' bs='"+i+"'>\n" +
+                                "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
+                                "                    </li>";
+                        } else {
+                            //str += "<span class='list' bs='" + i + "'>" + i + "</span>  ";
+                            str += "<li class=\"paginate_button page-item\" class='list' bs='\"+i+\"'>\n" +
+                                "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
+                                "                    </li>"
+                        }
+
+                    }
+                }
+                str += "<li class=\"paginate_button page-item next\" id=\"listContest_next\">\n" +
+                    "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"8\" tabindex=\"0\" class=\"page-link\">下一页</a>\n" +
+                    "                    </li>";
+                $("#fenye").html(str);
+
+                var s = "";
+                for(var i = 0;i<data.member.length;i++){
+                    if(data.member[i].permission == "栏目管理员"){
+                        //s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>"+data.member[i].column+"</td></tr>";
+                        s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>";
+                        s +=  "<select>"
+                        for(var j=0;j<data.member[i].column.length;j++){
+                            s += "<option value = '"+data.member[i].column[j]+"'> " +data.member[i].column[j] ;
+                            s += "</option>";
+                        }
+                        s += "</select></td></tr>";
+                    }else{
+                        s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>"+"普通用户"+"</td></tr>";
+
+                    }
+                }
+                $("#display_tbody").html(s);
+            }
+        })
+    }
+    $("#prev").click(function(){
+        page = page - 1;
+        if(page < 1){
+            page = 1;
+        }
+        Load();
+    })
+    $("next").click(function(){
+        page = page + 1;
+        if(page > maxys){
+            page = maxys;
+        }
+        Load();
+
+    })
+    $(".list").click(function(){
+        page = parseInt($(this).attr("bs"));
+        Load();
+    })
+</script>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
