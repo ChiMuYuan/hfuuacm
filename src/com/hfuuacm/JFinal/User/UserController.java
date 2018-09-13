@@ -1,6 +1,7 @@
 package com.hfuuacm.JFinal.User;
 
 import com.alibaba.druid.util.StringUtils;
+import com.hfuuacm.JFinal.Mysql.Article;
 import com.hfuuacm.JFinal.Mysql.Permission;
 import com.hfuuacm.JFinal.Mysql.Subject;
 import com.hfuuacm.JFinal.Mysql.User;
@@ -249,7 +250,9 @@ public class UserController extends Controller {
     public void deleteuser() {
         String id = getPara("id");
 
-        if (User.dao.findById(id).delete())
+        if (Permission.dao.findFirst("SELECT * FROM permission WHERE user_id=?", id) == null &&
+                Article.dao.findFirst("SELECT * FROM article WHERE author=?", id) == null &&
+                User.dao.deleteById(id))
             renderJson("status", "success");
         else
             renderJson("status", false);

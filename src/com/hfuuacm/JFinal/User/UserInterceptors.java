@@ -5,9 +5,6 @@ import com.hfuuacm.JFinal.Mysql.User;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
-import org.omg.CORBA.INTERNAL;
-
-import javax.sound.sampled.Control;
 
 public class UserInterceptors implements Interceptor {
     public void intercept(Invocation invocation) {
@@ -32,6 +29,12 @@ public class UserInterceptors implements Interceptor {
         } else if (key.equals("/user/getprofile") && GetProfile(controller)) {
             controller.redirect("/");
             return;
+        } else if (key.equals("/user/updateprofile") && UpdateProfileInterceptors(controller)) {
+            controller.redirect("/");
+            return;
+        } else if (key.equals("/user/deleteuser") && DeleteUserInterceptors(controller)) {
+            controller.redirect("/");
+            return;
         }
 
         invocation.invoke();
@@ -43,9 +46,6 @@ public class UserInterceptors implements Interceptor {
         String sessionuid = controller.getSessionAttr("uid");
         String sessionUsername = controller.getSessionAttr("Username");
         String sessionpermission = controller.getSessionAttr("permission");
-
-        System.out.println(Username);
-        System.out.println(password);
 
         if ((password == null || Username == null) &&
                 (sessionuid == null || sessionUsername == null || sessionpermission == null))
@@ -111,6 +111,33 @@ public class UserInterceptors implements Interceptor {
                 return true;
         }
 
+        return false;
+    }
+
+    private boolean UpdateProfileInterceptors(Controller controller) {
+        String permission = controller.getSessionAttr("permission");
+        String uid = controller.getSessionAttr("uid");
+        String Username = controller.getSessionAttr("Username");
+        String id = controller.getPara("id");
+        String para_name = controller.getPara("unama");
+        String email = controller.getPara("email");
+
+        if (permission == null || uid == null || Username == null || id == null || para_name == null || email == null ||
+                !StringUtils.isNumber(id) || User.dao.findById(id) == null ||
+                User.dao.findById(id).getInt("permission") <= Integer.parseInt(uid))
+            return true;
+        return false;
+    }
+
+    private boolean DeleteUserInterceptors(Controller controller) {
+        String permission = controller.getSessionAttr("permission");
+        String uid = controller.getSessionAttr("uid");
+        String Username = controller.getSessionAttr("Username");
+        String id = controller.getPara("id");
+
+        if (permission == null || uid == null || Username == null || id == null || !StringUtils.isNumber(id) ||
+                User.dao.findById(id) == null || User.dao.findById(id).getInt("permission") <= Integer.parseInt(permission))
+            return true;
         return false;
     }
 
