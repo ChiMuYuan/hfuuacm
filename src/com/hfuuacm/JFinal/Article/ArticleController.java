@@ -14,7 +14,25 @@ import java.util.Map;
 public class ArticleController extends Controller {
     public void index() { redirect("/");}
 
-    public void getlink() {
+    public void getcolumn() {
+        List<Subject> all_subject = Subject.dao.find("SELECT * FROM subject");
+        List<Object> subjectList = new ArrayList<>();
+
+        for (int i = 0; i < all_subject.size(); i ++) {
+            Subject subject = all_subject.get(i);
+            Map<Object, Object> subject_name = new HashMap<>();
+            subject_name.put("name", subject.getStr("topic"));
+            subjectList.add(subject_name);
+        }
+
+        Map<Object, Object> Json = new HashMap<>();
+        Json.put("status", "success");
+        Json.put("column", subjectList);
+
+        renderJson(Json);
+    }
+
+    public void getarticlelink() {
         String column = getPara("column");
         String page = getPara("page");
         String number = getPara("lists");
