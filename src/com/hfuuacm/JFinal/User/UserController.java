@@ -1,6 +1,7 @@
 package com.hfuuacm.JFinal.User;
 
 import com.alibaba.druid.util.StringUtils;
+import com.hfuuacm.JFinal.Mysql.Permission;
 import com.hfuuacm.JFinal.Mysql.Subject;
 import com.hfuuacm.JFinal.Mysql.User;
 import com.hfuuacm.JFinal.Main.sessionInterceptors;
@@ -215,8 +216,43 @@ public class UserController extends Controller {
     }
 
     public void updateprofile() {
+        String profile_id = getPara("id");
         String Username = getPara("uname");
-        String password = getPara("upwd");
+        String email = getPara("email");
+        String[] column = getParaValues("column");
+
+        User user = User.dao.findById(profile_id);
+
+        if (User.dao.findFirst("SELECT * FROM User WHERE Username=? OR email=?") != null) {
+            renderJson("status", "用户名或邮箱已存在");
+            return;
+        }
+
+        if (column != null) {
+            user.set("permission", 2).update();
+            List<Permission> permissionList = Permission.dao.find(
+                    "SELECT * FROM permission WHERE user_id=?", profile_id);
+            for (int i = 0; i < permissionList.size(); i ++)
+                permissionList.get(i).delete();
+            for (int i = 0; i < column.length; i ++)
+                new Permission().dao.set("subject_id", column[i]).set("user_id", profile_id).save();
+        }
+        else
+            user.set("permission", 3).update();
+
+        user.set("Username", Username).update();
+        user.set("email", email).update();
+
+        renderJson("status", "success");
+    }
+
+    public void deleteuser() {
+        String id = getPara("id");
+
+        if (User.dao.findById(id).delete())
+            renderJson("status", "success");
+        else
+            renderJson("status", false);
 
     }
 }
