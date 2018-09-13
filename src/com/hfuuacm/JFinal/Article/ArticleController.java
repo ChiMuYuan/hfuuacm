@@ -35,7 +35,7 @@ public class ArticleController extends Controller {
     public void getarticlelink() {
         String column = getPara("column");
         String page = getPara("page");
-        String number = getPara("lists");
+        int number = Integer.parseInt(getPara("lists"));
         int stid = 0, all_page = 0;
 
         List<Article> all_articleList;
@@ -46,11 +46,10 @@ public class ArticleController extends Controller {
             Subject subject = Subject.dao.findFirst("SELECT * FROM subject WHERE topic=?", column);
             all_page = subject.getInt("number");
             all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?,?",
-                    subject.getStr("id"), stid, Integer.parseInt(number));
+                    subject.getStr("id"), stid, number);
         }
         else
-            all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?",
-                    Integer.parseInt(number));
+            all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?", number);
 
         List<Object> articleList = new ArrayList<>();
         for (int i = 0; i < all_articleList.size(); i ++) {
