@@ -21,6 +21,13 @@
   <![endif]-->
   <link href="css/carousel.css" rel="stylesheet">
 
+  <!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 <body>
 <!-- NAVBAR
@@ -48,7 +55,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">竞赛历程 <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="#">rating榜</a></li>
-                <li><a href="User_all.html">成员榜</a></li>
+                <li><a href="user_all.html">成员榜</a></li>
                 <li><a href="#">历年成绩</a></li>
                 <li role="separator" class="divider"></li>
                 <li class="dropdown-header">相关网站</li>
@@ -57,20 +64,19 @@
                 <li><a href="https://pearfl.github.io/">队内博客链接</a></li>
               </ul>
             </li>
-            <li><a href="#">更多栏目</a></li>
+            <li><a href="column_all.html">更多栏目</a></li>
           </ul>
           <div style="display: flex;justify-content: flex-end;">
             <ul class="nav navbar-nav" id="login_register">
               <!--<li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%=session.getAttribute("uname")%><span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">xxx <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">账户管理</a></li>
-                  <li><a href="#">历史成绩</a></li>
-                  <li><a href="logout.jsp">注销</a></li>
+                  <li><a href="#">个人信息</a></li>
+                  <li><a href="user_all.html">注销</a></li>
                 </ul>
               </li>-->
-                <li data-toggle="modal" data-target="#loginModal"><a style="cursor: hand">登录</a></li>
-              <li data-toggle="modal" data-target="#registerModal"><a style="cursor: pointer">注册</a></li>
+                <!--<li data-toggle="modal" data-target="#loginModal"><a style="cursor: hand">登录</a></li>
+              <li data-toggle="modal" data-target="#registerModal"><a style="cursor: pointer">注册</a></li>-->
               
             </ul>
           </div>
@@ -145,10 +151,6 @@
       <img class="img-circle" src="https://i.loli.net/2018/09/03/5b8c8e61641fc.jpg" alt="Generic placeholder image" width="140" height="140">
       <h2>组内通知</h2>
       <ul id="group-information" style="list-style-type:none">
-        <li>12312312</li>
-        <li>12312312</li>
-        <li>12312312</li>
-        <li>12312312</li>
       </ul>
       <p><a class="btn btn-default" href="#" role="button">more &raquo;</a></p>
     </div><!-- /.col-lg-4 -->
@@ -173,13 +175,6 @@
     <p>&copy; 2018 hfuuacm,<br>Powered by mxh | ysl</p>
   </footer>
 </div><!-- /.container -->
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- 模态框（loginModal） -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -213,6 +208,7 @@
             <button type="button" class="btn btn-primary" id="btn-login">登录</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
           </div>
+          <div id = "login_wrong"></div>
 
       </form>
 
@@ -257,9 +253,10 @@
           </div>
           <div class="modal-footer">
               <span id="registerMsg" class="tip_login" style="opacity: 1;color:red;"></span>
-              <button type="submit" class="btn btn-primary" id="btn-register">注册</button>
+              <button type="button" class="btn btn-primary" id="btn-register">注册</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
           </div>
+            <div id="register_warning"></div>
         </form>
       </div>
 
@@ -277,7 +274,13 @@
             dataType:"json",
             success:function(result){
                 if(result.status == "success"){
-                    var s = "<li data-toggle=\"modal\" data-target=\"#loginModal\"><a style=\"cursor: hand\">"+result.uname+"</a></li>\n"
+                    var s = "<li class=\"dropdown\">\n" +
+                        "                <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">"+result.uname+" <span class=\"caret\"></span></a>\n" +
+                        "                <ul class=\"dropdown-menu\">\n" +
+                        "                  <li><a href=\"#\">个人信息</a></li>\n" +
+                        "                  <li><a href=\"http://localhost:8080/user/logout\">注销</a></li>\n" +
+                        "                </ul>\n" +
+                        "              </li>"
                     $("#login_register").html(s);
                 }else{
                     var s = "<li data-toggle=\"modal\" data-target=\"#loginModal\"><a style=\"cursor: hand\">登录</a></li>\n" +
@@ -288,42 +291,42 @@
         });
 
         $.ajax({
-              url:"",
-              data:{column:"group-information"},
+              url:"http://localhost:8080/article/getarticlelink",
+              data:{lists:5,column:"组内通知"},
               type:"post",
               dataType:"json",
               success: function(data){
                   var s = "";
-                  for(var i in data){
-                    s+="<li>"+data[i]+"</li>";
+                  for(var i = 0;i<data.article.length;i++){
+                      s+="<li>"+data.article[i].title+"</li>";
                   }
                   $("#group-information").html(s);
               }
           });
 
         $.ajax({
-            url:"",
-            data:{column:"achievement"},
+            url:"http://localhost:8080/article/getarticlelink",
+            data:{lists:5,column:"成绩公告"},
             type:"post",
             dataType:"json",
             success: function(data){
                 var s = "";
-                for(var i in data){
-                   s+="<li>"+data[i]+"</li>";
+                for(var i = 0;i<data.article.length;i++){
+                    s+="<li>"+data.article[i].title+"</li>";
                 }
                 $("#achievement").html(s);
             }
         });
 
         $.ajax({
-            url:"",
-            data:{column:"this-week-work"},
+            url:"http://localhost:8080/article/getarticlelink",
+            data:{lists:5,column:"本周工作"},
             type:"post",
             dataType:"json",
             success: function(data){
                 var s = "";
-                for(var i in data){
-                   s+="<li>"+data[i]+"</li>";
+                for(var i = 0;i<data.article.length;i++){
+                    s+="<li>"+data.article[i].title+"</li>";
                 }
                 $("#this-week-work").html(s);
             }
@@ -346,7 +349,6 @@
                     window.location.href="index.html";
                 }else{
                     //跳回到Index.jsp登录页面，同时在登录页面给用户一个友好的提示
-                    //$(".tip_login").text("密码不正确");
                     alert("您输入的用户名或者密码不正确");
                 }
             }
@@ -354,34 +356,48 @@
     });
 
     $("#btn-register").click(function(){
-        $.ajax({
-            url:"http://localhost:8080/user/register",
-            type:"post",
-            data:{
-                uname2:$("input[name=uname2]").val(),
-                uemail2:$("input[name=uemail2]").val(),
-                upwd2:$("input[name=upwd2]").val()
-            },
-            dataType:"json",
-            success:function(result){
-                alert(result.status);
-                if(result.status == "success"){
-                    alert("注册成功，用户名为"+result.uname);
-                }else{
-                    alert("注册失败,用户名或邮箱已存在");
+        var t = document.getElementById("uemail2").value;
+        var reg = new RegExp("^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$"); //正则表达式
+        if(!reg.test(t)){
+            var tmp = "<div class=\"alert alert-warning\" role=\"alert\">\n" +
+                "        <strong>Warning!</strong> 邮箱规则错误\n" +
+                "      </div>";
+            $("#register_warning").html(tmp);
+        }else{
+            $.ajax({
+                url:"http://localhost:8080/user/register",
+                type:"post",
+                data:{
+                    uname2:$("input[name=uname2]").val(),
+                    uemail2:$("input[name=uemail2]").val(),
+                    upwd2:$("input[name=upwd2]").val()
+                },
+                dataType:"json",
+                success:function(result){
+                    if(result.status == "success"){
+                        alert("注册成功，用户名为"+result.uname);
+                        window.location.href="index.html";
+                    }else if(result.status == "用户名已存在"){
+                        var tmp = "<div class=\"alert alert-warning\" role=\"alert\">\n" +
+                            "        <strong>Warning!</strong> 用户名已存在\n" +
+                            "      </div>";
+                        $("#register_warning").html(tmp);
+                    }else if(result.status == "邮箱已存在"){
+                        $("#register_warning").html(tmp);
+                    }
+                },
+                error:function(jqXHR, textStatus, errorThrown){
+                    /*弹出jqXHR对象的信息*/
+                    alert(jqXHR.responseText);
+                    alert(jqXHR.status);
+                    alert(jqXHR.readyState);
+                    alert(jqXHR.statusText);
+                    /*弹出其他两个参数的信息*/
+                    alert(textStatus);
+                    alert(errorThrown);
                 }
-            },
-            error:function(jqXHR, textStatus, errorThrown){
-                /*弹出jqXHR对象的信息*/
-                alert(jqXHR.responseText);
-                alert(jqXHR.status);
-                alert(jqXHR.readyState);
-                alert(jqXHR.statusText);
-                /*弹出其他两个参数的信息*/
-                alert(textStatus);
-                alert(errorThrown);
-            }
-        });
+            });
+        }
     });
 </script>
 </html>
