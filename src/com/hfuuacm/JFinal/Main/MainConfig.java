@@ -33,7 +33,7 @@ public class MainConfig extends JFinalConfig {
         routes.add("/article", ArticleController.class);
 //        routes.add("/subject", SubjectCon)
 
-//        routes.add("/test", testindex.class);
+        routes.add("/test", testindex.class);
     }
 
     @Override

@@ -8,6 +8,15 @@ public class testindex extends Controller {
         render("/test.html");
     }
 
+    public void realjson() {
+        setAttr("status", "yes");
+        renderJson(new String[]{"status"});
+    }
+
+    public void badjson() {
+        renderJson("status", "no");
+    }
+
     public void uploadfile() {
         getFile("pic_title");
 
