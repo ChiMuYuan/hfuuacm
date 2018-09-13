@@ -124,7 +124,7 @@
                 var s = "";
                 for(var i = 0;i<result.column.length;i++){
                     //s+="<li><a class=\"column\" id=\"column"+i+"\" style=\"cursor: pointer\">"+result.column[i]+"</a></li>";
-                    s+="<li class=\"column\" id=\"column"+i+"\"><a style=\"cursor: pointer\">"+result.column[i]+"</a></li>";
+                    s+="<li class=\"column\" id=\"column"+i+"\"><a style=\"cursor: pointer\">"+result.column[i].name+"</a></li>";
                 }
                 $("#column_display").html(s);
             }
@@ -161,12 +161,12 @@
                         if(i >= minys && i <= maxys) {
                             if(i == page) {
                                 //str += "<li class='paginate_button page-item active' class='current' bs='" + i + "'>" + i + "</li>  ";
-                                str +="<li class=\"paginate_button page-item\" class='current' bs='"+i+"'>\n" +
+                                str +="<li class=\"paginate_button page-item active\" class='current' bs='"+i+"'>\n" +
                                     "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
                                     "                    </li>";
                             } else {
                                 //str += "<span class='list' bs='" + i + "'>" + i + "</span>  ";
-                                str += "<li class=\"paginate_button page-item\" class='list' bs='\"+i+\"'>\n" +
+                                str += "<li class=\"paginate_button page-item list\" class='list' bs='\"+i+\"'>\n" +
                                     "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
                                     "                    </li>"
                             }
@@ -185,25 +185,25 @@
                 }
             })
         }
-        $("#prev").click(function(){
-            page = page - 1;
-            if(page < 1){
-                page = 1;
-            }
-            Load();
-        })
-        $("next").click(function(){
-            page = page + 1;
-            if(page > maxys){
-                page = maxys;
-            }
-            Load();
+    $(document).on("click","#listContest_previous",function(){
+        page = page - 1;
+        if(page < 1){
+            page = 1;
+        }
+        Load();
+    })
 
-        })
-        $(".list").click(function(){
-            page = parseInt($(this).attr("bs"));
-            Load();
-        })
+    $(document).on("click","#listContest_next",function(){
+        page = page + 1;
+        if(page > maxys){
+            page = maxys;
+        }
+        Load();
+    })
+    $(document).on("click",".list",function(){
+        page = parseInt($(this).attr("bs"));
+        Load();
+    })
 </script>
 
 </html>

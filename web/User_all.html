@@ -22,6 +22,12 @@
     <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -65,27 +71,6 @@
             <h1 class="page-header">总成员表</h1>
             <div class="table-responsive">
                 <ul class="pagination" id="fenye">
-                    <li class="paginate_button page-item previous" id="listContest_previous">
-                        <a href="#" aria-controls="listContest" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
-                    </li>
-                    <li class="paginate_button page-item active">
-                        <a href="#" aria-controls="listContest" data-dt-idx="1" tabindex="0" class="page-link">1</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" data-dt-idx="2" tabindex="0" class="page-link">2</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" data-dt-idx="3" tabindex="0" class="page-link">3</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" data-dt-idx="4" tabindex="0" class="page-link">4</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" data-dt-idx="5" tabindex="0" class="page-link">5</a>
-                    </li>
-                    <li class="paginate_button page-item next" id="listContest_next">
-                        <a href="#" aria-controls="listContest" data-dt-idx="8" tabindex="0" class="page-link">Next</a>
-                    </li>
                 </ul>
                 <table class="table table-striped">
                     <thead>
@@ -106,13 +91,19 @@
 
 <script type="text/javascript">
     var page = 1;
+    var maxys;
+    $(document).ready(function(e){
+        page = 1;
+        Load();
+    });
 
     $(document).on("click",".user",function(){
         page = 1;
         var id = $(this).attr("id");
-        col = $("#"+id).text();
+        //col = $("#"+id).text();
         Load();
     });
+
 
     function Load(){
         $.ajax({
@@ -125,7 +116,7 @@
             dataType:"json",
             success:function(data){
                 //总页数
-                var maxys = data.all_page;
+                maxys = data.all_page;
                 var str = "";
                 var minys = 1;
                 //str += "<span>总共:"+maxys+"页 </span> ";
@@ -136,12 +127,12 @@
                     if(i >= minys && i <= maxys) {
                         if(i == page) {
                             //str += "<li class='paginate_button page-item active' class='current' bs='" + i + "'>" + i + "</li>  ";
-                            str +="<li class=\"paginate_button page-item\" class='current' bs='"+i+"'>\n" +
+                            str +="<li class=\"paginate_button page-item active\"bs='"+i+"'>\n" +
                                 "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
                                 "                    </li>";
                         } else {
                             //str += "<span class='list' bs='" + i + "'>" + i + "</span>  ";
-                            str += "<li class=\"paginate_button page-item\" class='list' bs='\"+i+\"'>\n" +
+                            str += "<li class=\"paginate_button page-item list\" bs='"+i+"'>\n" +
                                 "                        <a style=\"cursor: pointer\" aria-controls=\"listContest\" data-dt-idx=\"5\" tabindex=\"0\" class=\"page-link\">"+i+"</a>\n" +
                                 "                    </li>"
                         }
@@ -158,9 +149,9 @@
                     if(data.member[i].permission == "栏目管理员"){
                         //s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>"+data.member[i].column+"</td></tr>";
                         s += "<tr><td>"+data.member[i].id+"</td><td>"+data.member[i].Username+"</td><td>"+data.member[i].email+"</td><td>";
-                        s +=  "<select>"
+                        s +=  "栏目管理员：<select>"
                         for(var j=0;j<data.member[i].column.length;j++){
-                            s += "<option value = '"+data.member[i].column[j]+"'> " +data.member[i].column[j] ;
+                            s += "<option value = '"+data.member[i].column[j].name+"'> " +data.member[i].column[j].name ;
                             s += "</option>";
                         }
                         s += "</select></td></tr>";
@@ -173,36 +164,26 @@
             }
         })
     }
-    $("#prev").click(function(){
+    $(document).on("click","#listContest_previous",function(){
         page = page - 1;
         if(page < 1){
             page = 1;
         }
         Load();
     })
-    $("next").click(function(){
+
+    $(document).on("click","#listContest_next",function(){
         page = page + 1;
         if(page > maxys){
             page = maxys;
         }
         Load();
-
     })
-    $(".list").click(function(){
+    $(document).on("click",".list",function(){
         page = parseInt($(this).attr("bs"));
         Load();
     })
 </script>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-<script src="../../assets/js/vendor/holder.min.js"></script>
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 </body>
 </html>
