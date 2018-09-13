@@ -184,12 +184,24 @@ public class UserController extends Controller {
 
         Map<Object, Object> JSON = new HashMap<>();
 
+        List<Subject> subjectList = Subject.dao.find("SELECT * FROM subject");
+        List<Object> all_column = new ArrayList<>();
+        for (int i = 0; i < subjectList.size(); i ++) {
+            Subject subject = subjectList.get(i);
+            Map<Object, Object> map = new HashMap<>();
+
+            map.put("id", subject.getInt("id"));
+            map.put("name", subject.getStr("topic"));
+            all_column.add(map);
+        }
+
         if (permission == 2) {
-            List<Subject> subjectList = Subject.dao.find(
+            List<Subject> subject_List = Subject.dao.find(
                     "SELECT topic FROM subject JOIN permission ON subject.id = subject_id WHERE user_id = ?",
                     user.getInt("id"));
+
             List<Object> objectList = new ArrayList<>();
-            JsonTools.subjectGetnamelist(subjectList, objectList);
+            JsonTools.subjectGetnamelist(subject_List, objectList);
             JSON.put("column", objectList);
         }
 
@@ -197,6 +209,7 @@ public class UserController extends Controller {
         JSON.put("Username", user.getStr("Username"));
         JSON.put("email", user.getStr("email"));
         JSON.put("permission", permission);
+        JSON.put("all_column", all_column);
 
         renderJson(JSON);
     }
