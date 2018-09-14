@@ -212,7 +212,7 @@
     $(document).on("click","#delete",function(){
         var t = parseInt($(this).attr("cnt"));
         var s = "<input type=\"hidden\" name=\"column\" value=\""+t+"\">";
-        s += "<button type=\"submit\" class=\"btn btn-primary\" id=\"btn-post\">确认</button>\n" +
+        s += "<button type=\"button\" class=\"btn btn-primary\" id=\"btn-post\">确认</button>\n" +
             "                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">取消</button>";
         $("#ed").html(s);
     })
@@ -227,11 +227,11 @@
             },
             dataType:"json",
             success:function(data){
-                var s = "<form url='http://localhost:8080/user/updateprofile' action='post' class=\"form-horizontal\" role=\"form\">\n" +
+                var s = "<form id='form-modify' method='get' action='http://localhost:8080/user/updateprofile' class=\"form-horizontal\" role=\"form\">\n" +
                     "                    <div class=\"form-group\">\n" +
-                    "                        <label for=\"Username\" class=\"col-sm-2 control-label\">用户名</label>\n" +
+                    "                        <label for=\"uname\" class=\"col-sm-2 control-label\">用户名</label>\n" +
                     "                        <div class=\"col-sm-9\">\n" +
-                    "                            <input type=\"text\" id=\"Username\" name=\"Username\" class=\"form-control well\" value='"+data.Username+"' placeholder=\""+data.Username+"\"/>\n" +
+                    "                            <input type=\"text\" id=\"uname\" name=\"uname\" class=\"form-control well\" value='"+data.Username+"' placeholder=\""+data.Username+"\"/>\n" +
                     "                        </div>\n" +
                     "                    </div>\n" +
                     "                    <div class=\"form-group\">\n" +
@@ -244,7 +244,7 @@
                     "                        <label class=\"col-sm-2 control-label\">权限</label>\n" +
                     "                        <div class=\"col-sm-9\">\n" +
                     "                            <ul style=\"list-style:none\">\n";
-
+                        s += "<input type=\"hidden\" name=\"id\" value=\""+t+"\">";
                         for(var i=0;i<data.all_column.length;i++){
                             s+="<li><input type='checkbox' name='column' value='"+data.all_column[i].id+"'>"+data.all_column[i].name+" </li>";
                         }
@@ -254,7 +254,7 @@
                     "                    </div>\n" +
                     "                    <div class=\"modal-footer\">\n" +
                     "                        <span id=\"registerMsg\" class=\"tip_login\" style=\"opacity: 1;color:red;\"></span>\n" +
-                    "                        <button type=\"submit\" class=\"btn btn-primary\" id=\"btn-post\">提交</button>\n" +
+                    "                        <button type=\"button\" class=\"btn btn-primary\" id=\"btn-post-modify\">提交</button>\n" +
                     "                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">取消</button>\n" +
                     "                    </div>\n" +
                     "                </form>";
@@ -263,6 +263,43 @@
         })
 
     })
+    $(document).on("click","#btn-post-modify",function(){
+        $.ajax({
+            url:"http://localhost:8080/user/getprofile",
+            type:"post",
+            data:$("#form-modify").serialize(),
+            dataType:"json",
+            success: function(data){
+                if(data.status == "success"){
+                    alert("修改成功");
+                    window.location.href="user_all.html";
+                }else{
+                    alert("修改失败");
+                    window.location.href="user_all.html";
+                }
+            }
+
+        })
+    })
+
+    $(document).on("click","#btn-post-delete",function(){
+        $.ajax({
+            url:"http://localhost:8080/user/getprofile",
+            type:"post",
+            data:$("#form-modify").serialize(),
+            dataType:"json",
+            success: function(data){
+                if(data.status == "success"){
+                    alert("修改成功");
+                    window.location.href="user_all.html";
+                }else{
+                    alert("修改失败");
+                    window.location.href="user_all.html";
+                }
+            }
+        })
+    })
+
 </script>
 
 <!-- 模态框（modifyModal） -->
@@ -274,35 +311,6 @@
                 <h2 class="modal-title" id="myModalLabel" align="center">修改</h2>
             </div>
             <div class="modal-body" id="st">
-                <!--<form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="Username" class="col-sm-2 control-label">用户名</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="Username" name="Username" class="form-control well" placeholder="请输入用户名"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="email" class="col-sm-2 control-label">邮箱</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="email" name="email" class="form-control well" placeholder="请输入邮箱"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">权限</label>
-                        <div class="col-sm-9">
-                            <ul style="list-style:none">
-                                <li><input type="checkbox" value="中国">系统管理员</li>
-                                <li><input type="checkbox" value="英国">栏目管理员</li>
-                                <li><input type="checkbox" value="美国">普通成员</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <span id="registerMsg" class="tip_login" style="opacity: 1;color:red;"></span>
-                        <button type="button" class="btn btn-primary" id="btn-post">提交</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    </div>
-                </form>-->
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -316,9 +324,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h2 class="modal-title" id="myModalLabel2" align="center">是否删除？</h2>
             </div>
-                <form url="http://localhost:8080/user/deleteuser" action="post">
+                <form id="form-delete" method="get" action="http://localhost:8080/user/deleteuser">
                     <div class="modal-footer" id="ed">
-                        <button type="submit" class="btn btn-primary" id="btn-post">确认</button>
+                        <button type="submit" class="btn btn-primary" id="btn-post-delete">确认</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </form>

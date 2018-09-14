@@ -68,27 +68,6 @@
             <h1 class="page-header" id ="category"></h1>
             <div class="table-responsive">
                 <ul class="pagination" id="fenye">
-                    <!--<li class="paginate_button page-item previous" id="listContest_previous">
-                        <a href="#" aria-controls="listContest" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
-                    </li>
-                    <li class="paginate_button page-item active" class='current'>
-                        <a href="#" aria-controls="listContest" data-dt-idx="1" tabindex="0" class="page-link">1</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" tabindex="0" class="page-link">2</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" data-dt-idx="3" tabindex="0" class="page-link">3</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" data-dt-idx="4" tabindex="0" class="page-link">4</a>
-                    </li>
-                    <li class="paginate_button page-item">
-                        <a href="#" aria-controls="listContest" data-dt-idx="5" tabindex="0" class="page-link">5</a>
-                    </li>
-                    <li class="paginate_button page-item next" id="listContest_next">
-                        <a href="#" aria-controls="listContest" data-dt-idx="8" tabindex="0" class="page-link">Next</a>
-                    </li>-->
                 </ul>
                 <table class="table table-striped">
                     <thead>
@@ -102,6 +81,9 @@
                     <tbody id="display_tbody">
                     </tbody>
                 </table>
+                <div id="add">
+                    <!--<button flag="" type="button" class="btn btn-sm btn-primary">增加栏目</button>-->
+                </div>
             </div>
         </div>
     </div>
@@ -167,6 +149,9 @@
                 },
                 dataType:"json",
                 success:function(data){
+                    var p =" <button id='add-article' flag=\""+col+"\" type=\"button\" class=\"btn btn-primary\"><a href='article.html' style='color:#fff'>增加文章</a></button>"
+                    $("#add").html(p);
+
                     //总页数
                     var maxys = data.all_page;
                     var str = "";
@@ -202,6 +187,8 @@
                         s += "</div></td></tr>";
                     }
                     $("#display_tbody").html(s);
+
+
                 }
             })
         }
@@ -224,6 +211,14 @@
         page = parseInt($(this).attr("bs"));
         Load();
     })
+
+    /*$(document).on("click","#add-article",function(){
+        var t = parseInt($(this).attr("flag"));
+        $.ajax({
+            url:
+        })
+    })*/
+
 </script>
 
 </html>
