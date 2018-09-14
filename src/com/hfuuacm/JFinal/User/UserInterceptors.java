@@ -124,7 +124,7 @@ public class UserInterceptors implements Interceptor {
 
         if (permission == null || uid == null || Username == null || id == null || para_name == null || email == null ||
                 !StringUtils.isNumber(id) || User.dao.findById(id) == null ||
-                User.dao.findById(id).getInt("permission") <= Integer.parseInt(uid))
+                User.dao.findById(id).getInt("permission") <= Integer.parseInt(permission))
             return true;
         return false;
     }
