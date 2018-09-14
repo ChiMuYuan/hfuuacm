@@ -18,6 +18,9 @@ public class ArticleInterceptors implements Interceptor {
         } else if (key.equals("/article/addarticle") && AddArticleInterceptor(controller)) {
             controller.redirect("/");
             return;
+        } else if (key.equals("/article/getarticle") && GetArticleInterceptor(controller)) {
+            controller.redirect("/");
+            return;
         }
 
         invocation.invoke();
@@ -34,15 +37,23 @@ public class ArticleInterceptors implements Interceptor {
         return false;
     }
 
+    private boolean GetArticleInterceptor(Controller controller) {
+        String id = controller.getPara("id");
+
+        if (id == null)
+            return true;
+        return false;
+    }
+
     private boolean AddArticleInterceptor(Controller controller) {
         String uid = controller.getSessionAttr("uid");
         String permission = controller.getSessionAttr("permission");
         String Username = controller.getSessionAttr("Username");
         String title = controller.getPara("title");
-        String comment = controller.getPara("body");
+        String content = controller.getPara("body");
         String column = controller.getPara("column");
 
-        if (uid == null || permission == null || Username == null || title == null || comment == null || column == null
+        if (uid == null || permission == null || Username == null || title == null || content == null || column == null
                 || Subject.dao.findById(column) == null)
             return true;
         return false;

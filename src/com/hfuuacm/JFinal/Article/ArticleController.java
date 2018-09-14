@@ -7,10 +7,9 @@ import com.hfuuacm.JFinal.Main.sessionInterceptors;
 import com.hfuuacm.Tools.JsonTools;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.jfinal.plugin.activerecord.Db;
+
+import java.util.*;
 
 @Before({sessionInterceptors.class, ArticleInterceptors.class})
 public class ArticleController extends Controller {
@@ -44,8 +43,10 @@ public class ArticleController extends Controller {
             all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?,?",
                     subject.getStr("id"), stid, number);
         }
-        else
-            all_articleList = Article.dao.find("SELECT * FROM article WHERE subject=? ORDER BY id LIMIT ?", number);
+        else {
+            all_articleList = Article.dao.find("SELECT * FROM article ORDER BY id LIMIT ?", number);
+            all_page = Db.queryInt("SELECT COUNT(*) FROM article");
+        }
 
         List<Object> articleList = new ArrayList<>();
         for (int i = 0; i < all_articleList.size(); i ++) {
@@ -66,13 +67,42 @@ public class ArticleController extends Controller {
         renderJson(Json);
     }
 
+    public void getarticle() {
+        String id = getPara("id");
+
+        Article article = Article.dao.findById(id);
+        String author = User.dao.findById(article.getStr("author")).getStr("Username");
+
+        Map<Object, Object> JSON = new HashMap<>();
+        Map<Object, Object> column = new HashMap<>();
+        column.put("id", article.getInt("subject"));
+        column.put("name", Subject.dao.findById(article.getStr("subject")).getStr("topic"));
+
+        JSON.put("column", column);
+        JSON.put("id", article.getStr("id"));
+        JSON.put("author", author);
+        JSON.put("title", article.getStr("title"));
+        JSON.put("content", article.getStr("content"));
+        JSON.put("Lasttime", article.getStr("Lasttime"));
+        JSON.put("viewer", article.getInt("viewer")+1);
+
+        int viewer = article.getInt("viewer");
+        article.set("viewer", viewer+1).update();
+
+        renderJson(JSON);
+
+    }
+
     public void addarticle() {
         String title = getPara("title");
-        String comment = getPara("body");
+        String content = getPara("body");
         String column = getPara("column");
 
         new Article().set("title", title).set("author", getSessionAttr("uid")).set("subject", column).
-                set("comment", comment).save();
+                set("content", content).set("Lasttime", new Date()).set("viewer", 0).save();
+
+        Subject subject = Subject.dao.findById(column);
+        subject.set("number", Db.queryInt("SELECT COUNT(*) FROM article WHERE subject=?", column)).update();
 
         redirect("/");
     }
