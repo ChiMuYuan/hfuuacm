@@ -12,6 +12,7 @@ public class JsonTools {
             Subject subject = all.get(i);
             Map<Object, Object> map = new HashMap<>();
             map.put("name", subject.getStr("topic"));
+            map.put("id", subject.getInt("id"));
             result.add(map);
         }
     }

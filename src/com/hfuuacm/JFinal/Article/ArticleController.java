@@ -3,6 +3,7 @@ package com.hfuuacm.JFinal.Article;
 import com.hfuuacm.JFinal.Mysql.Article;
 import com.hfuuacm.JFinal.Mysql.Subject;
 import com.hfuuacm.JFinal.Mysql.User;
+import com.hfuuacm.JFinal.Main.sessionInterceptors;
 import com.hfuuacm.Tools.JsonTools;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Before(ArticleInterceptors.class)
+@Before({sessionInterceptors.class, ArticleInterceptors.class})
 public class ArticleController extends Controller {
     public void index() { redirect("/");}
 
@@ -68,8 +69,9 @@ public class ArticleController extends Controller {
     public void addarticle() {
         String title = getPara("title");
         String comment = getPara("body");
+        String column = getPara("column");
 
-        new Article().set("title", title).set("author", getSessionAttr("uid")).set("subject", 1).
+        new Article().set("title", title).set("author", getSessionAttr("uid")).set("subject", column).
                 set("comment", comment).save();
 
         redirect("/");
