@@ -224,7 +224,8 @@ public class UserController extends Controller {
 
         User user = User.dao.findById(profile_id);
 
-        if (User.dao.findFirst("SELECT * FROM User WHERE Username=? OR email=?") != null) {
+        if (User.dao.findFirst(
+                "SELECT * FROM User WHERE (Username=? OR email=?) AND id=?", Username, email, profile_id) != null) {
             renderJson("status", "用户名或邮箱已存在");
             return;
         }
@@ -244,7 +245,7 @@ public class UserController extends Controller {
         user.set("Username", Username).update();
         user.set("email", email).update();
 
-        renderJson("status", "success");
+        redirect("/user_all.html");
     }
 
     public void deleteuser() {
@@ -253,9 +254,8 @@ public class UserController extends Controller {
         if (Permission.dao.findFirst("SELECT * FROM permission WHERE user_id=?", id) == null &&
                 Article.dao.findFirst("SELECT * FROM article WHERE author=?", id) == null &&
                 User.dao.deleteById(id))
-            renderJson("status", "success");
+            redirect("/user_all.html");
         else
             renderJson("status", false);
-
     }
 }
