@@ -237,7 +237,7 @@ public class UserController extends Controller {
             for (int i = 0; i < permissionList.size(); i ++)
                 permissionList.get(i).delete();
             for (int i = 0; i < column.length; i ++)
-                new Permission().dao.set("subject_id", column[i]).set("user_id", profile_id).save();
+                new Permission().set("subject_id", column[i]).set("user_id", profile_id).save();
         }
         else
             user.set("permission", 3).update();
