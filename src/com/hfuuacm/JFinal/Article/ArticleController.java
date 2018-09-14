@@ -67,10 +67,11 @@ public class ArticleController extends Controller {
 
     public void addarticle() {
         String title = getPara("title");
-        String comment = getPara("most-body");
+        String comment = getPara("body");
 
         new Article().set("title", title).set("author", getSessionAttr("uid")).set("subject", 1).
                 set("comment", comment).save();
 
+        redirect("/");
     }
 }
