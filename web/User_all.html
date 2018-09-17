@@ -286,7 +286,7 @@
         $.ajax({
             url:"http://localhost:8080/user/getprofile",
             type:"post",
-            data:$("#form-modify").serialize(),
+            data:$("#form-delete").serialize(),
             dataType:"json",
             success: function(data){
                 if(data.status == "success"){

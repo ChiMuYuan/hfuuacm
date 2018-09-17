@@ -90,8 +90,8 @@
                       <li><a href="logout.jsp">注销</a></li>
                     </ul>
                   </li>-->
-                  <li data-toggle="modal" data-target="#loginModal" cursor:pointer;><a>登录</a></li>
-                  <li data-toggle="modal" data-target="#registerModal" cursor:pointer;><a>注册</a></li>
+                  <li data-toggle="modal" data-target="#loginModal" ><a>登录</a></li>
+                  <li data-toggle="modal" data-target="#registerModal"><a>注册</a></li>
                   
                 </ul>
               </div>
@@ -116,17 +116,17 @@
         <div class="col-sm-8 blog-main">
 
           <div class="blog-post">
-            <h2 class="blog-post-title">Sample blog post</h2>
-            <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
+            <h2 class="blog-post-title" id="title">Sample blog post</h2>
+              <p class="blog-post-meta"><p id="time">January 1, 2014</p> by <a href="#" id="writer">Mark</a></p>
 
-            <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
+            <p id="body">This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
             <hr>
           </div><!-- /.blog-post -->
 
           <nav>
             <ul class="pager">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">Next</a></li>
+              <li><a href="#">上一篇</a></li>
+              <li><a href="#">下一篇</a></li>
             </ul>
           </nav>
         </div><!-- /.blog-main -->
@@ -162,4 +162,25 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
+<script type="text/javascript">
+    $(document).ready(function(e){
+        var str=location.href;
+        //var num=str.indexOf("?");
+        var num=str.indexOf("=");
+        str=str.substr(num+1);
+        //var arr=str.split("&");
+        $.ajax({
+            url:"http://localhost:8080/article/getarticle",
+            type:"post",
+            dataType:"json",
+            data:{id:str},
+            success: function(data){
+                $("#title").text(data.title);
+                $("#body").text(data.content);
+                $("#time").text(data.Lasttime);
+                $("#writer").text(data.author);
+            }
+        })
+    })
+</script>
 </html>

@@ -58,7 +58,7 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li><a>各列栏目列表</a></li>
+                <li><a href="column_all.html">各列栏目列表</a></li>
             </ul>
             <ul class="nav nav-sidebar" id="column_display">
 
@@ -121,12 +121,36 @@
             type:"post",
             dataType:"json",
             success:function(result){
+                var p =" <button id='add-article' flag=\""+col+"\" type=\"button\" class=\"btn btn-primary\"><a href='article.html' style='color:#fff'>增加文章</a></button>"
+                $("#add").html(p);
+                $("#category").text("栏目总表");
                 var s = "";
                 for(var i = 0;i<result.column.length;i++){
                     //s+="<li><a class=\"column\" id=\"column"+i+"\" style=\"cursor: pointer\">"+result.column[i]+"</a></li>";
                     s+="<li class=\"column\" id=\"column"+i+"\"><a style=\"cursor: pointer\">"+result.column[i].name+"</a></li>";
                 }
                 $("#column_display").html(s);
+            }
+        })
+        page = 1;
+        col = "";
+        Load();
+        $.ajax({
+            url:"http://localhost:8080/article/getarticlelink",
+            type:"post",
+            dataType:"json",
+            data:{
+                page:page,
+                lists:10
+            },
+            success:function (data) {
+                var s = "";
+                for(var i = 0;i<data.article.length;i++){
+                    s += "<tr><td>"+data.article[i].id+"</td><td><a href='display.html?id="+data.article[i].id+"'>"+data.article[i].title+"</a></td><td>"+data.article[i].author+"</td><td>"+data.article[i].time;
+                    s +="<div style=\"padding: 0px 10px;float: right\"><button id=\"modify\" cnt='"+data.article[i].id+"' data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button id=\"delete\" cnt='"+data.article[i].id+"' data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
+                    s += "</div></td></tr>";
+                }
+                $("#display_tbody").html(s);
             }
         })
 
@@ -151,7 +175,7 @@
                 success:function(data){
                     var p =" <button id='add-article' flag=\""+col+"\" type=\"button\" class=\"btn btn-primary\"><a href='article.html' style='color:#fff'>增加文章</a></button>"
                     $("#add").html(p);
-
+                    $("#category").text(col);
                     //总页数
                     var maxys = data.all_page;
                     var str = "";
@@ -182,8 +206,8 @@
                     $("#fenye").html(str);
                     var s = "";
                     for(var i = 0;i<data.article.length;i++){
-                        s += "<tr><td>"+data.article[i].id+"</td><td>"+data.article[i].title+"</td><td>"+data.article[i].author+"</td><td>"+data.article[i].time;
-                        s +="<div style=\"padding: 0px 10px;float: right\"><button data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
+                        s += "<tr><td>"+data.article[i].id+"</td><td><a href='display.html?id="+data.article[i].id+"'>"+data.article[i].title+"</a></td><td>"+data.article[i].author+"</td><td>"+data.article[i].time;
+                        s +="<div style=\"padding: 0px 10px;float: right\"><button id=\"modify\" cnt='"+data.article[i].id+"' data-toggle=\"modal\" data-target=\"#modifyModal\" class=\"btn btn-xs btn-primary\" style=\"margin:0px 25px\">修改</button><button id=\"delete\" cnt='"+data.article[i].id+"' data-toggle=\"modal\" data-target=\"#deleteModal\" style=\"margin:0px 25px\" class=\"btn btn-xs btn-danger\">删除</button>";
                         s += "</div></td></tr>";
                     }
                     $("#display_tbody").html(s);
@@ -218,7 +242,79 @@
             url:
         })
     })*/
+    /*$(document).on("click","#btn-post-modify",function(){
+        $.ajax({
+            url:"http://localhost:8080/user/getprofile",
+            type:"post",
+            data:$("#form-modify").serialize(),
+            dataType:"json",
+            success: function(data){
+                if(data.status == "success"){
+                    alert("修改成功");
+                    window.location.href="column_all.html";
+                }else{
+                    alert("修改失败");
+                    window.location.href="column_all.html";
+                }
+            }
+
+        })
+    })*/
+
+    $(document).on("click","#btn-post-delete",function(){
+        $.ajax({
+            url:"http://localhost:8080/user/getprofile",
+            type:"post",
+            data:$("#form-delete").serialize(),
+            dataType:"json",
+            success: function(data){
+                if(data.status == "success"){
+                    alert("修改成功");
+                    window.location.href="column_all.html";
+                }else{
+                    alert("修改失败");
+                    window.location.href="column_all.html";
+                }
+            }
+        })
+    })
+
+    $(document).on("click","#modify",function(){
+        window.location.href="article.html?id="+parseInt($(this).attr("cnt"));;
+    })
 
 </script>
+
+<!-- 模态框（modifyModal） -->
+<div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h2 class="modal-title" id="myModalLabel" align="center">修改</h2>
+            </div>
+            <div class="modal-body" id="st">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（deleteModal） -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h2 class="modal-title" id="myModalLabel2" align="center">是否删除？</h2>
+            </div>
+            <form id="form-delete" method="get" action="http://localhost:8080/user/deleteuser">
+                <div class="modal-footer" id="ed">
+                    <button type="submit" class="btn btn-primary" id="btn-post-delete">确认</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 
 </html>

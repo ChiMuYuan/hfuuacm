@@ -75,6 +75,7 @@
               data:{column:column_index,title:$("#title").val(),body:$("#most-body").text(),},
               type:"post",
               dataType:"json",
+
           });
 
       });
@@ -83,6 +84,24 @@
           var id = $(this).attr("id");
           column_index = id;
       });
+
+      $(document).ready(function(e){
+          var str=location.href;
+          //var num=str.indexOf("?");
+          var num=str.indexOf("=");
+          str=str.substr(num+1);
+          //var arr=str.split("&");
+          $.ajax({
+              url:"http://localhost:8080/article/getarticle",
+              type:"post",
+              dataType:"json",
+              data:{id:str},
+              success: function(data){
+                  $("#title").val(data.title);
+                  $("#most-body").text(data.content);
+              }
+          })
+      })
 
   </script>
 </body>
