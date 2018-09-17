@@ -211,8 +211,9 @@
 
     $(document).on("click","#delete",function(){
         var t = parseInt($(this).attr("cnt"));
-        var s = "<input type=\"hidden\" name=\"column\" value=\""+t+"\">";
-        s += "<button type=\"button\" class=\"btn btn-primary\" id=\"btn-post\">确认</button>\n" +
+        //var s = "<input type=\"hidden\" name=\"column\" value=\""+t+"\">";
+        var s ="";
+        s += "<button type=\"button\" class=\"btn btn-primary\" id=\"btn-post-delete\" value='"+t+"'>确认</button>\n" +
             "                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">取消</button>";
         $("#ed").html(s);
     })
@@ -283,17 +284,18 @@
     })
 
     $(document).on("click","#btn-post-delete",function(){
+        var id = parseInt($(this).attr("value"));
         $.ajax({
-            url:"http://localhost:8080/user/getprofile",
+            url:"http://localhost:8080/user/deleteuser",
             type:"post",
-            data:$("#form-delete").serialize(),
+            data: {id:id},
             dataType:"json",
             success: function(data){
                 if(data.status == "success"){
-                    alert("修改成功");
+                    alert("删除成功");
                     window.location.href="user_all.html";
                 }else{
-                    alert("修改失败");
+                    alert("删除失败");
                     window.location.href="user_all.html";
                 }
             }
@@ -324,10 +326,10 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h2 class="modal-title" id="myModalLabel2" align="center">是否删除？</h2>
             </div>
-                <form id="form-delete" method="get" action="http://localhost:8080/user/deleteuser">
+                <form id="form-delete">
                     <div class="modal-footer" id="ed">
-                        <button type="submit" class="btn btn-primary" id="btn-post-delete">确认</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <!--<button type="submit" class="btn btn-primary" id="btn-post-delete">确认</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
                     </div>
                 </form>
         </div><!-- /.modal-content -->
